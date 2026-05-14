@@ -1,0 +1,19 @@
+[
+  {
+    "date": "2026-03-06",
+    "nav": 25,
+    "source": "inception"
+  },
+  {
+    "date": "2026-05-13",
+    "nav": 28,
+    "source": "manual",
+    "updatedAt": "2026-05-14T17:10:08.438Z"
+  },
+  {
+    "date": "2026-05-14",
+    "nav": 27.5,
+    "source": "manual",
+    "updatedAt": "2026-05-14T17:06:38.460Z"
+  }
+]

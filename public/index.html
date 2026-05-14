@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RVI NAV Monitor | Robinhood Ventures Fund I</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: '#0a0e17',
+            card: '#111827',
+            'card-border': '#1f2937',
+            accent: '#00dc5a',
+            negative: '#ef4444',
+            muted: '#6b7280',
+            'muted-light': '#9ca3af'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background: #0a0e17; }
+    .pulse-dot { animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .spinner { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #111827; }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+    .nav-form input { background: #1f2937; border: 1px solid #374151; color: #e5e7eb; }
+    .nav-form input:focus { outline: none; border-color: #00dc5a; box-shadow: 0 0 0 1px #00dc5a33; }
+  </style>
+</head>
+<body class="text-gray-200 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- Header -->
+    <header class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold text-white tracking-tight">RVI NAV Monitor</h1>
+        <span class="text-xs text-muted bg-card px-2 py-1 rounded border border-card-border">Robinhood Ventures Fund I</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div id="market-status" class="flex items-center gap-2 text-sm">
+          <span class="w-2 h-2 rounded-full bg-muted pulse-dot" id="status-dot"></span>
+          <span id="status-text" class="text-muted">Loading...</span>
+        </div>
+        <div id="last-updated" class="text-xs text-muted"></div>
+      </div>
+    </header>
+
+    <!-- Price + NAV Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+      <!-- Price Card -->
+      <div class="bg-card rounded-xl border border-card-border p-5">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm text-muted font-medium">Market Price</span>
+          <span class="text-xs text-muted" id="price-exchange">NYSE: RVI</span>
+        </div>
+        <div class="flex items-baseline gap-3 mb-3">
+          <span id="price" class="text-4xl font-bold text-white tabular-nums">--</span>
+          <span id="price-change" class="text-lg font-semibold tabular-nums">--</span>
+        </div>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-muted">Open</span><span id="price-open" class="text-gray-300 tabular-nums">--</span></div>
+          <div class="flex justify-between"><span class="text-muted">Volume</span><span id="price-volume" class="text-gray-300 tabular-nums">--</span></div>
+          <div class="flex justify-between"><span class="text-muted">Day High</span><span id="price-high" class="text-gray-300 tabular-nums">--</span></div>
+          <div class="flex justify-between"><span class="text-muted">Avg Volume</span><span id="price-avg-vol" class="text-gray-300 tabular-nums">--</span></div>
+          <div class="flex justify-between"><span class="text-muted">Day Low</span><span id="price-low" class="text-gray-300 tabular-nums">--</span></div>
+          <div class="flex justify-between"><span class="text-muted">Market Cap</span><span id="price-mcap" class="text-gray-300 tabular-nums">--</span></div>
+        </div>
+      </div>
+
+      <!-- NAV / Premium Card -->
+      <div class="bg-card rounded-xl border border-card-border p-5">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm text-muted font-medium">NAV & Premium/Discount</span>
+          <span class="text-xs text-muted" id="nav-date">--</span>
+        </div>
+        <div class="flex items-baseline gap-4 mb-3">
+          <div>
+            <div class="text-xs text-muted mb-0.5">NAV/Share</div>
+            <span id="nav-value" class="text-3xl font-bold text-white tabular-nums">--</span>
+          </div>
+          <div>
+            <div class="text-xs text-muted mb-0.5">Premium</div>
+            <span id="premium-value" class="text-3xl font-bold tabular-nums">--</span>
+          </div>
+        </div>
+
+        <!-- Premium bar visualization -->
+        <div class="mb-4">
+          <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+            <div id="premium-bar" class="h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-muted mt-1">
+            <span>-50% Discount</span>
+            <span>NAV</span>
+            <span>+100% Premium</span>
+          </div>
+        </div>
+
+        <!-- NAV Entry Form -->
+        <div class="nav-form border-t border-card-border pt-3">
+          <div class="text-xs text-muted mb-2">Update NAV (daily published value)</div>
+          <form id="nav-form" class="flex gap-2">
+            <input type="number" id="nav-input" step="0.01" min="0" placeholder="NAV per share" class="flex-1 px-3 py-1.5 rounded-lg text-sm" required>
+            <input type="date" id="nav-date-input" class="px-3 py-1.5 rounded-lg text-sm">
+            <button type="submit" class="bg-accent text-black font-semibold px-4 py-1.5 rounded-lg text-sm hover:bg-green-400 transition-colors">Save</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 52-Week Range Bar -->
+    <div class="bg-card rounded-xl border border-card-border p-4 mb-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-sm text-muted font-medium">52-Week Range</span>
+        <div class="flex gap-4 text-sm">
+          <span class="text-muted">Low: <span id="range-52-low" class="text-gray-300 tabular-nums">--</span></span>
+          <span class="text-muted">High: <span id="range-52-high" class="text-gray-300 tabular-nums">--</span></span>
+        </div>
+      </div>
+      <div class="relative h-3 bg-gray-800 rounded-full">
+        <div id="range-52-fill" class="absolute h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 rounded-full opacity-30" style="left:0;right:0"></div>
+        <div id="range-52-marker" class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg shadow-white/20 transition-all duration-500" style="left:50%"></div>
+      </div>
+    </div>
+
+    <!-- Price Chart -->
+    <div class="bg-card rounded-xl border border-card-border p-5 mb-4">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm text-muted font-medium">Price History</span>
+        <div class="flex gap-1" id="period-selector">
+          <button data-period="1m" class="px-3 py-1 text-xs rounded-lg border border-card-border text-muted hover:text-white hover:border-gray-500 transition-colors">1M</button>
+          <button data-period="3m" class="px-3 py-1 text-xs rounded-lg border border-accent text-accent">3M</button>
+          <button data-period="6m" class="px-3 py-1 text-xs rounded-lg border border-card-border text-muted hover:text-white hover:border-gray-500 transition-colors">6M</button>
+          <button data-period="1y" class="px-3 py-1 text-xs rounded-lg border border-card-border text-muted hover:text-white hover:border-gray-500 transition-colors">1Y</button>
+          <button data-period="max" class="px-3 py-1 text-xs rounded-lg border border-card-border text-muted hover:text-white hover:border-gray-500 transition-colors">MAX</button>
+        </div>
+      </div>
+      <div id="price-chart" style="height: 380px;"></div>
+    </div>
+
+    <!-- Holdings + Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+
+      <!-- Holdings Chart -->
+      <div class="bg-card rounded-xl border border-card-border p-5">
+        <div class="flex items-center justify-between mb-4">
+          <span class="text-sm text-muted font-medium">Portfolio Holdings</span>
+          <span class="text-xs text-muted" id="holdings-date">--</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <div style="width: 200px; height: 200px;" class="flex-shrink-0">
+            <canvas id="holdings-chart"></canvas>
+          </div>
+          <div id="holdings-legend" class="text-sm space-y-1.5 flex-1 min-w-0"></div>
+        </div>
+        <div id="new-investments" class="mt-4 pt-3 border-t border-card-border"></div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="bg-card rounded-xl border border-card-border p-5">
+        <span class="text-sm text-muted font-medium block mb-4">Fund Details</span>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Fund Type</span>
+            <span class="text-gray-200 text-sm font-medium">Closed-End Fund (CEF)</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Exchange</span>
+            <span class="text-gray-200 text-sm font-medium">NYSE</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Inception Date</span>
+            <span class="text-gray-200 text-sm font-medium">March 6, 2026</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Gross Expense Ratio</span>
+            <span class="text-gray-200 text-sm font-medium" id="expense-gross">--</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Net Expense Ratio</span>
+            <span class="text-gray-200 text-sm font-medium" id="expense-net">--</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm">Fee Waiver Expires</span>
+            <span class="text-gray-200 text-sm font-medium" id="fee-waiver">--</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5 border-b border-gray-800">
+            <span class="text-muted text-sm"># Holdings</span>
+            <span class="text-gray-200 text-sm font-medium">10</span>
+          </div>
+          <div class="flex justify-between items-center py-1.5">
+            <span class="text-muted text-sm">Category</span>
+            <span class="text-gray-200 text-sm font-medium">US Venture / Private Tech</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Premium/Discount History -->
+    <div class="bg-card rounded-xl border border-card-border p-5 mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-sm text-muted font-medium">Premium/Discount History</span>
+        <span class="text-xs text-muted">Based on recorded NAV entries</span>
+      </div>
+      <div style="height: 200px;">
+        <canvas id="premium-chart"></canvas>
+      </div>
+      <div id="no-premium-data" class="text-center text-muted text-sm py-8 hidden">
+        Add more NAV entries to see premium/discount history
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-muted pb-4">
+      Data from Yahoo Finance. NAV data is manually entered. Not financial advice.
+      <span class="mx-2">|</span>
+      <span id="footer-time"></span>
+    </footer>
+  </div>
+
+  <script>
+    // ===== State =====
+    const state = {
+      quote: null,
+      navHistory: [],
+      holdings: null,
+      isMarketHours: false,
+      currentPeriod: '3m'
+    };
+
+    let priceChart = null;
+    let lineSeries = null;
+    let volumeSeries = null;
+    let holdingsChartInstance = null;
+    let premiumChartInstance = null;
+    let refreshTimer = null;
+
+    // ===== Formatters =====
+    const fmtUSD = (n) => n == null ? '--' : '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtPct = (n) => n == null ? '--' : (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+    const fmtVol = (n) => {
+      if (n == null) return '--';
+      if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+      return n.toString();
+    };
+    const fmtCap = (n) => {
+      if (n == null) return '--';
+      if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
+      if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(0) + 'M';
+      return '$' + n.toLocaleString();
+    };
+
+    // ===== API =====
+    async function fetchJSON(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    // ===== Quote =====
+    async function refreshQuote() {
+      try {
+        state.quote = await fetchJSON('/api/quote');
+        renderPrice();
+        renderPremiumDiscount();
+        document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+        document.getElementById('footer-time').textContent = 'Last refresh: ' + new Date().toLocaleString();
+      } catch (e) {
+        console.error('Quote fetch failed:', e);
+      }
+    }
+
+    function renderPrice() {
+      const q = state.quote;
+      if (!q) return;
+
+      document.getElementById('price').textContent = fmtUSD(q.price);
+
+      const changeEl = document.getElementById('price-change');
+      const isUp = q.change >= 0;
+      changeEl.textContent = `${isUp ? '+' : ''}${fmtUSD(q.change).replace('$', '')} (${fmtPct(q.changePercent)})`;
+      changeEl.className = `text-lg font-semibold tabular-nums ${isUp ? 'text-accent' : 'text-negative'}`;
+
+      document.getElementById('price-open').textContent = fmtUSD(q.open);
+      document.getElementById('price-high').textContent = fmtUSD(q.dayHigh);
+      document.getElementById('price-low').textContent = fmtUSD(q.dayLow);
+      document.getElementById('price-volume').textContent = fmtVol(q.volume);
+      document.getElementById('price-avg-vol').textContent = fmtVol(q.avgVolume);
+      document.getElementById('price-mcap').textContent = fmtCap(q.marketCap);
+
+      // 52-week range
+      if (q.fiftyTwoWeekLow != null && q.fiftyTwoWeekHigh != null) {
+        document.getElementById('range-52-low').textContent = fmtUSD(q.fiftyTwoWeekLow);
+        document.getElementById('range-52-high').textContent = fmtUSD(q.fiftyTwoWeekHigh);
+        const range = q.fiftyTwoWeekHigh - q.fiftyTwoWeekLow;
+        const pct = range > 0 ? ((q.price - q.fiftyTwoWeekLow) / range) * 100 : 50;
+        document.getElementById('range-52-marker').style.left = Math.max(0, Math.min(100, pct)) + '%';
+      }
+    }
+
+    // ===== NAV & Premium =====
+    function getLatestNav() {
+      if (state.navHistory.length === 0) return null;
+      return state.navHistory[state.navHistory.length - 1];
+    }
+
+    function renderPremiumDiscount() {
+      const latest = getLatestNav();
+      const q = state.quote;
+
+      if (latest) {
+        document.getElementById('nav-value').textContent = fmtUSD(latest.nav);
+        document.getElementById('nav-date').textContent = 'NAV as of ' + latest.date;
+      }
+
+      if (latest && q && q.price) {
+        const premium = ((q.price - latest.nav) / latest.nav) * 100;
+        const premEl = document.getElementById('premium-value');
+        premEl.textContent = fmtPct(premium);
+        premEl.className = `text-3xl font-bold tabular-nums ${premium >= 0 ? 'text-negative' : 'text-accent'}`;
+
+        // Premium bar: map -50% to +100% range to 0%-100% width
+        const barPct = Math.max(0, Math.min(100, ((premium + 50) / 150) * 100));
+        const bar = document.getElementById('premium-bar');
+        bar.style.width = barPct + '%';
+        bar.className = `h-full rounded-full transition-all duration-500 ${premium >= 0 ? 'bg-red-500' : 'bg-green-500'}`;
+      }
+    }
+
+    async function loadNavHistory() {
+      try {
+        state.navHistory = await fetchJSON('/api/nav');
+        renderPremiumDiscount();
+        renderPremiumChart();
+      } catch (e) {
+        console.error('NAV fetch failed:', e);
+      }
+    }
+
+    // NAV form
+    document.getElementById('nav-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nav = parseFloat(document.getElementById('nav-input').value);
+      const date = document.getElementById('nav-date-input').value || undefined;
+      if (isNaN(nav) || nav <= 0) return;
+
+      try {
+        await fetch('/api/nav', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nav, date })
+        });
+        document.getElementById('nav-input').value = '';
+        document.getElementById('nav-date-input').value = '';
+        await loadNavHistory();
+      } catch (e) {
+        console.error('NAV save failed:', e);
+      }
+    });
+
+    // ===== Price Chart (TradingView Lightweight Charts) =====
+    function initPriceChart() {
+      const container = document.getElementById('price-chart');
+      priceChart = LightweightCharts.createChart(container, {
+        layout: {
+          background: { color: '#111827' },
+          textColor: '#9ca3af',
+          fontSize: 12
+        },
+        grid: {
+          vertLines: { color: '#1f293722' },
+          horzLines: { color: '#1f293744' }
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+          vertLine: { color: '#6b728066', width: 1, style: 2 },
+          horzLine: { color: '#6b728066', width: 1, style: 2 }
+        },
+        rightPriceScale: {
+          borderColor: '#1f2937',
+          scaleMargins: { top: 0.1, bottom: 0.2 }
+        },
+        timeScale: {
+          borderColor: '#1f2937',
+          timeVisible: true,
+          secondsVisible: false
+        },
+        handleScroll: { vertTouchDrag: false },
+        handleScale: { axisPressedMouseMove: true }
+      });
+
+      lineSeries = priceChart.addAreaSeries({
+        lineColor: '#00dc5a',
+        topColor: '#00dc5a33',
+        bottomColor: '#00dc5a05',
+        lineWidth: 2,
+        crosshairMarkerVisible: true,
+        crosshairMarkerRadius: 4
+      });
+
+      volumeSeries = priceChart.addHistogramSeries({
+        color: '#00dc5a44',
+        priceFormat: { type: 'volume' },
+        priceScaleId: 'volume'
+      });
+      priceChart.priceScale('volume').applyOptions({
+        scaleMargins: { top: 0.8, bottom: 0 }
+      });
+
+      // Resize observer
+      const ro = new ResizeObserver(() => {
+        priceChart.applyOptions({ width: container.clientWidth, height: container.clientHeight });
+      });
+      ro.observe(container);
+    }
+
+    async function refreshChart(period) {
+      try {
+        state.currentPeriod = period;
+        const data = await fetchJSON(`/api/chart?period=${period}`);
+
+        const priceData = data.quotes.map(q => {
+          const d = new Date(q.date);
+          return {
+            time: Math.floor(d.getTime() / 1000),
+            value: q.close
+          };
+        }).filter(d => d.value != null);
+
+        const volData = data.quotes.map(q => {
+          const d = new Date(q.date);
+          return {
+            time: Math.floor(d.getTime() / 1000),
+            value: q.volume || 0,
+            color: q.close >= q.open ? '#00dc5a44' : '#ef444444'
+          };
+        }).filter(d => d.time);
+
+        lineSeries.setData(priceData);
+        volumeSeries.setData(volData);
+        priceChart.timeScale().fitContent();
+
+        // Update period selector styling
+        document.querySelectorAll('#period-selector button').forEach(btn => {
+          if (btn.dataset.period === period) {
+            btn.className = 'px-3 py-1 text-xs rounded-lg border border-accent text-accent';
+          } else {
+            btn.className = 'px-3 py-1 text-xs rounded-lg border border-card-border text-muted hover:text-white hover:border-gray-500 transition-colors';
+          }
+        });
+      } catch (e) {
+        console.error('Chart fetch failed:', e);
+      }
+    }
+
+    // Period selector
+    document.getElementById('period-selector').addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (btn && btn.dataset.period) refreshChart(btn.dataset.period);
+    });
+
+    // ===== Holdings Chart (Chart.js) =====
+    async function loadHoldings() {
+      try {
+        state.holdings = await fetchJSON('/api/holdings');
+        renderHoldings();
+      } catch (e) {
+        console.error('Holdings fetch failed:', e);
+      }
+    }
+
+    function renderHoldings() {
+      const h = state.holdings;
+      if (!h) return;
+
+      document.getElementById('holdings-date').textContent = 'As of ' + h.asOf;
+      document.getElementById('expense-gross').textContent = h.expenseRatio.gross + '%';
+      document.getElementById('expense-net').textContent = h.expenseRatio.net + '%';
+      document.getElementById('fee-waiver').textContent = h.expenseRatio.waiverExpiry;
+
+      // Doughnut chart
+      const ctx = document.getElementById('holdings-chart').getContext('2d');
+      if (holdingsChartInstance) holdingsChartInstance.destroy();
+
+      holdingsChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: h.holdings.map(x => x.name),
+          datasets: [{
+            data: h.holdings.map(x => x.weight),
+            backgroundColor: h.holdings.map(x => x.color),
+            borderColor: '#111827',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '65%',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.label}: ${ctx.parsed}%`
+              }
+            }
+          }
+        }
+      });
+
+      // Legend
+      const legend = document.getElementById('holdings-legend');
+      legend.innerHTML = h.holdings.map(x =>
+        `<div class="flex items-center gap-2 min-w-0">
+          <span class="w-2.5 h-2.5 rounded-sm flex-shrink-0" style="background:${x.color}"></span>
+          <span class="truncate text-gray-300">${x.name}</span>
+          <span class="text-muted ml-auto flex-shrink-0">${x.weight}%</span>
+        </div>`
+      ).join('');
+
+      // New investments
+      const newInv = document.getElementById('new-investments');
+      if (h.newInvestments.length > 0) {
+        newInv.innerHTML = `
+          <div class="text-xs text-muted mb-2">New Investments (allocation TBD)</div>
+          <div class="flex gap-2 flex-wrap">
+            ${h.newInvestments.map(x => `<span class="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-md border border-card-border">${x.name}</span>`).join('')}
+          </div>`;
+      }
+    }
+
+    // ===== Premium/Discount History Chart =====
+    function renderPremiumChart() {
+      const nav = state.navHistory;
+      if (nav.length < 2) {
+        document.getElementById('premium-chart').style.display = 'none';
+        document.getElementById('no-premium-data').classList.remove('hidden');
+        return;
+      }
+
+      document.getElementById('premium-chart').style.display = 'block';
+      document.getElementById('no-premium-data').classList.add('hidden');
+
+      const ctx = document.getElementById('premium-chart').getContext('2d');
+      if (premiumChartInstance) premiumChartInstance.destroy();
+
+      premiumChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: nav.map(e => e.date),
+          datasets: [{
+            label: 'NAV per Share',
+            data: nav.map(e => e.nav),
+            borderColor: '#00dc5a',
+            backgroundColor: '#00dc5a22',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: '#00dc5a'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true, labels: { color: '#9ca3af', font: { size: 11 } } },
+            tooltip: {
+              callbacks: { label: (ctx) => `NAV: $${ctx.parsed.y.toFixed(2)}` }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#6b7280', font: { size: 10 } },
+              grid: { color: '#1f293733' }
+            },
+            y: {
+              ticks: { color: '#6b7280', callback: (v) => '$' + v.toFixed(2) },
+              grid: { color: '#1f293733' }
+            }
+          }
+        }
+      });
+    }
+
+    // ===== Market Status =====
+    async function checkMarketStatus() {
+      try {
+        const status = await fetchJSON('/api/status');
+        const dot = document.getElementById('status-dot');
+        const text = document.getElementById('status-text');
+
+        const labels = {
+          'open': 'Market Open',
+          'pre-market': 'Pre-Market',
+          'after-hours': 'After Hours',
+          'closed': 'Market Closed'
+        };
+        const colors = {
+          'open': 'bg-accent',
+          'pre-market': 'bg-yellow-500',
+          'after-hours': 'bg-yellow-500',
+          'closed': 'bg-muted'
+        };
+
+        dot.className = `w-2 h-2 rounded-full pulse-dot ${colors[status.marketStatus]}`;
+        text.textContent = `${labels[status.marketStatus]} | ${status.easternTime} ET`;
+        state.isMarketHours = status.isMarketHours;
+      } catch (e) {
+        console.error('Status check failed:', e);
+      }
+    }
+
+    // ===== Auto Refresh =====
+    function startAutoRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      const interval = state.isMarketHours ? 30000 : 300000;
+      refreshTimer = setInterval(refreshQuote, interval);
+    }
+
+    // ===== Init =====
+    async function init() {
+      initPriceChart();
+
+      // Load all data in parallel
+      await Promise.all([
+        refreshQuote(),
+        refreshChart('3m'),
+        loadNavHistory(),
+        loadHoldings(),
+        checkMarketStatus()
+      ]);
+
+      startAutoRefresh();
+
+      // Recheck market status every minute and adjust refresh rate
+      setInterval(async () => {
+        const wasOpen = state.isMarketHours;
+        await checkMarketStatus();
+        if (wasOpen !== state.isMarketHours) startAutoRefresh();
+      }, 60000);
+    }
+
+    init();
+  </script>
+</body>
+</html>
