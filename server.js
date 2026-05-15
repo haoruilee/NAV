@@ -1,7 +1,8 @@
 import express from 'express';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,6 +10,8 @@ const __dirname = dirname(__filename);
 const app = express();
 const SYMBOL = 'RVI';
 const PORT = process.env.PORT || 4000;
+const ADMIN_KEY = process.env.ADMIN_KEY || crypto.randomBytes(16).toString('hex');
+const CIK = '0002085091'; // RVI SEC CIK
 
 // Simple in-memory cache
 const cache = new Map();
@@ -78,6 +81,126 @@ function extractOHLCV(chartResult) {
     close: ohlcv.close[i],
     volume: ohlcv.volume[i]
   })).filter(q => q.close !== null);
+}
+
+// ===== SEC EDGAR NAV Auto-Fetch =====
+async function fetchSECFilings() {
+  const url = `https://data.sec.gov/submissions/CIK${CIK}.json`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'RVINavMonitor admin@rvi-monitor.app' }
+  });
+  if (!res.ok) throw new Error(`SEC EDGAR returned ${res.status}`);
+  return res.json();
+}
+
+async function scrapeNAVFromFiling(accession, primaryDoc) {
+  const accClean = accession.replace(/-/g, '');
+  const url = `https://www.sec.gov/Archives/edgar/data/${CIK.replace(/^0+/, '')}/${accClean}/${primaryDoc}`;
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'RVINavMonitor admin@rvi-monitor.app' }
+  });
+  if (!res.ok) throw new Error(`Filing fetch returned ${res.status}`);
+  const html = await res.text();
+
+  // Look for NAV per Share patterns in the filing text
+  // Pattern 1: "NAV per Share as of [date] ($XX.XX)"
+  const patterns = [
+    /NAV\s+per\s+Share\s+as\s+of\s+([A-Za-z]+\s+\d{1,2},?\s+\d{4})\s+\(\$?([\d.]+)\)/gi,
+    /net\s+asset\s+value\s+per\s+(?:Share|share)\s+(?:at|as\s+of|on)\s+([A-Za-z]+\s+\d{1,2},?\s+\d{4})[^$]*\$?([\d.]+)\s+per/gi,
+    /\$([\d.]+)\s+per\s+Share[^.]*net\s+asset\s+value[^.]*as\s+of\s+([A-Za-z]+\s+\d{1,2},?\s+\d{4})/gi,
+  ];
+
+  const results = [];
+  for (const pattern of patterns) {
+    let match;
+    while ((match = pattern.exec(html)) !== null) {
+      let dateStr, navStr;
+      // Pattern 3 has date and NAV in reverse order
+      if (pattern === patterns[2]) {
+        navStr = match[1];
+        dateStr = match[2];
+      } else {
+        dateStr = match[1];
+        navStr = match[2];
+      }
+      const nav = parseFloat(navStr);
+      if (nav > 0 && nav < 500) { // Sanity check
+        const parsedDate = new Date(dateStr);
+        if (!isNaN(parsedDate.getTime())) {
+          results.push({
+            date: parsedDate.toISOString().split('T')[0],
+            nav,
+            source: 'sec-edgar',
+            filing: accession
+          });
+        }
+      }
+    }
+  }
+  return results;
+}
+
+async function autoFetchNAV() {
+  try {
+    console.log('[NAV Auto-Fetch] Checking SEC EDGAR for new filings...');
+    const data = await fetchSECFilings();
+    const filings = data.filings?.recent || {};
+    const forms = filings.form || [];
+    const dates = filings.filingDate || [];
+    const accessions = filings.accessionNumber || [];
+    const primaryDocs = filings.primaryDocument || [];
+
+    // Check relevant filing types for NAV data
+    const navFilingTypes = ['N-2', 'N-2/A', 'N-CSR', 'N-CSRS', 'N-CEN', '424B1', '424B3', 'N-2 MEF'];
+    const entries = loadNavHistory();
+    const existingSECDates = new Set(entries.filter(e => e.source === 'sec-edgar').map(e => e.date));
+    let newEntries = 0;
+
+    for (let i = 0; i < Math.min(forms.length, 10); i++) {
+      if (!navFilingTypes.includes(forms[i])) continue;
+
+      try {
+        const navData = await scrapeNAVFromFiling(accessions[i], primaryDocs[i]);
+        for (const nd of navData) {
+          if (!existingSECDates.has(nd.date)) {
+            const existing = entries.findIndex(e => e.date === nd.date);
+            if (existing >= 0) {
+              // Only overwrite manual entries if SEC data is available
+              if (entries[existing].source === 'manual') {
+                entries[existing] = { ...nd, updatedAt: new Date().toISOString() };
+                newEntries++;
+              }
+            } else {
+              entries.push({ ...nd, updatedAt: new Date().toISOString() });
+              newEntries++;
+            }
+            existingSECDates.add(nd.date);
+          }
+        }
+      } catch (err) {
+        console.error(`[NAV Auto-Fetch] Error scraping ${forms[i]} (${accessions[i]}):`, err.message);
+      }
+    }
+
+    if (newEntries > 0) {
+      entries.sort((a, b) => a.date.localeCompare(b.date));
+      saveNavHistory(entries);
+      console.log(`[NAV Auto-Fetch] Added ${newEntries} new NAV entries from SEC filings`);
+    } else {
+      console.log('[NAV Auto-Fetch] No new NAV data found');
+    }
+  } catch (err) {
+    console.error('[NAV Auto-Fetch] Failed:', err.message);
+  }
+}
+
+// Admin auth middleware
+function requireAdmin(req, res, next) {
+  const key = req.headers['x-admin-key'] || req.query.key;
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
 }
 
 app.use(express.json());
@@ -158,8 +281,8 @@ app.get('/api/nav', (req, res) => {
   res.json(loadNavHistory());
 });
 
-// POST /api/nav - add NAV entry
-app.post('/api/nav', (req, res) => {
+// POST /api/nav - add NAV entry (admin only)
+app.post('/api/nav', requireAdmin, (req, res) => {
   const { nav, date } = req.body;
   if (!nav || typeof nav !== 'number' || nav <= 0) {
     return res.status(400).json({ error: 'Invalid NAV value' });
@@ -228,5 +351,10 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n  RVI NAV Monitor`);
   console.log(`  ───────────────────────────`);
   console.log(`  Running on http://localhost:${PORT}`);
+  console.log(`  Admin key: ${ADMIN_KEY}`);
   console.log(`  Press Ctrl+C to stop\n`);
+
+  // Run NAV auto-fetch on startup and every 6 hours
+  autoFetchNAV();
+  setInterval(autoFetchNAV, 6 * 60 * 60 * 1000);
 });

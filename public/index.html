@@ -286,17 +286,16 @@
           </div>
         </div>
 
-        <!-- Spacer to push form down -->
+        <!-- Spacer to push info down -->
         <div class="flex-1"></div>
 
-        <!-- NAV Entry -->
+        <!-- NAV source info -->
         <div class="border-t border-border pt-4 mt-4">
-          <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-2.5">Update NAV</div>
-          <form id="nav-form" class="flex gap-2">
-            <input type="number" id="nav-input" step="0.01" min="0" placeholder="$ NAV" class="input-field flex-1 px-3 py-2 rounded-lg text-sm font-mono" required>
-            <input type="date" id="nav-date-input" class="input-field px-3 py-2 rounded-lg text-sm font-mono w-[140px]">
-            <button type="submit" class="btn-primary px-4 py-2 rounded-lg text-sm whitespace-nowrap">Save</button>
-          </form>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] text-txt-faint uppercase tracking-wider">Source</span>
+            <span class="tag bg-green/10 text-green border border-green/20" id="nav-source">SEC EDGAR</span>
+          </div>
+          <div class="text-[11px] text-txt-faint mt-2">NAV updated quarterly from SEC filings. Auto-checked every 6 hours.</div>
         </div>
       </div>
     </div>
@@ -399,7 +398,7 @@
   <!-- Footer -->
   <footer class="max-w-[1400px] mx-auto px-6 py-6">
     <div class="flex items-center justify-between text-[11px] text-txt-faint">
-      <span>Data: Yahoo Finance &middot; NAV: manual entry &middot; Not financial advice</span>
+      <span>Data: Yahoo Finance &middot; NAV: SEC EDGAR (auto) &middot; Not financial advice</span>
       <span class="font-mono" id="footer-time"></span>
     </div>
   </footer>
@@ -498,6 +497,9 @@
       if (latest) {
         document.getElementById('nav-value').textContent = fmtUSD(latest.nav);
         document.getElementById('nav-date').textContent = latest.date;
+        const srcEl = document.getElementById('nav-source');
+        const srcMap = { 'sec-edgar': 'SEC EDGAR', 'manual': 'Manual', 'inception': 'Inception' };
+        srcEl.textContent = srcMap[latest.source] || latest.source;
       }
 
       if (latest && q?.price) {
@@ -525,19 +527,6 @@
         renderPremiumChart();
       } catch (e) { console.error('NAV failed:', e); }
     }
-
-    document.getElementById('nav-form').addEventListener('submit', async e => {
-      e.preventDefault();
-      const nav = parseFloat(document.getElementById('nav-input').value);
-      const date = document.getElementById('nav-date-input').value || undefined;
-      if (isNaN(nav) || nav <= 0) return;
-      try {
-        await fetch('/api/nav', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nav, date }) });
-        document.getElementById('nav-input').value = '';
-        document.getElementById('nav-date-input').value = '';
-        await loadNavHistory();
-      } catch (e) { console.error('NAV save failed:', e); }
-    });
 
     // ===== Price Chart =====
     function initPriceChart() {
