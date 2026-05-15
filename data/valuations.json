@@ -1,0 +1,503 @@
+{
+  "lastUpdated": "2026-05-15T04:59:36.924Z",
+  "sources": {
+    "cbinsights": {
+      "lastFetched": "2026-05-15T04:59:06.959Z",
+      "status": "ok"
+    },
+    "news": {
+      "lastFetched": "2026-05-15T04:59:20.886Z",
+      "status": "ok"
+    },
+    "formD": {
+      "lastFetched": "2026-05-15T04:59:26.539Z",
+      "status": "ok"
+    },
+    "efts": {
+      "lastFetched": "2026-05-15T04:59:36.924Z",
+      "status": "ok",
+      "alerts": 0
+    }
+  },
+  "companies": {
+    "databricks": {
+      "valuations": [
+        {
+          "value": 100000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $100B"
+        },
+        {
+          "value": 134000000000,
+          "date": "2025-12-16",
+          "source": "news",
+          "headline": "Databricks Grows >55% YoY, Surpasses $4.8B Revenue Run-Rate, and is Raising >$4B Series L at $134B Valuation - Databricks",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOYU5RMUZBTkxvU0hXZ3hZMHhZYms1bDJJOTMyb19qWG5VS2t1NGtOc1cxZW1jRjNqZURISmFHY2VpcXowSlU3OTBoZjZnSE10bmhfRzZabFYzVGhyQnJGUGJrMXdPcUpJeEthUFZYYmgwbmtKRjNYVVdoY21fWVR1OThEVHZxZ0F6X3pTdmlkdGVEUUpwRVJDN3Z4SUVtdWQ1UlRFYkJ1aFd3aXRmblFybF82dWFUNm1kMFFaaUNremxrSUtBcmc?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2026-02-09",
+          "source": "news",
+          "headline": "Databricks completes $5 billion funding round at $134 billion valuation - CNBC",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxORGIzMXFFdUtmQnNDTGljOVhzbWFjclVYcmdQS3d0eUJqMEdhcmNmZE1lQS16S0dVRHRjdVNOdWxxTTZQRTNDcXE1MmJNTjU3UGpCMmoyRlNpS3ktNkpGNjd5VTc2YU14X0tydUJmQ09MQnI4ZUp2c0t0QlFTdWZINVNCVFUxX0pYaTZVNVgxUE1nSG92SHJxekd3MjlNLW1MVUJiNlRaQdIBrAFBVV95cUxNVmt1d24yQ09jdmJMczdzVW9EWkZJdXVkeGhwNmpZN2NLenFkdFowY2NONURsY2pUbXAxSnp1T0xDbFN2NmN0V09Ba2ZnWUdCSUJoUjk3cThrUmxiVU1JOFlMZVBUUllZdW5Tc0dtTG02aVJBOU11MUs2bzJKTU1yenBWanl4ZHFiOXVOalVvZHlpb3RkX2NBMXY4X1M4YUdMNlVUdm9kaWM0MEd0?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2025-12-16",
+          "source": "news",
+          "headline": "Databricks builds war chest with $134 billion valuation in latest funding round - Reuters",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOWW93Uk4tOHZZVEwxaVFpRmJKSkJYU05QYW5PbFpPUjgyWHBhaUgyS05LUlhDSXNhb1NjU3gxY3F3Zi1XdElMSHpCZ0pjbnM0NjdHc2VGeGFGXzlwUTc2dlhWRkFKNWpMSTVHT19iV3NKR1RVcGtKODhyckR5c2EtcXB2bU5JUldXUDdKQ3JTbll5bVhxaXJ6dzdJbGc5OVJhVndQMHU4dDdfUGt0QWhjRUEzc1EyN0Rj?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2025-12-16",
+          "source": "news",
+          "headline": "Databricks raises $4B at $134B valuation as its AI business heats up - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPTFJVZG4yM2FjdzhnaEVUVVdvTVJldHNhd1VWMFFVOUVzcVFiU3hIS2c1ZXo3RWM2THNtdUd6Nm0zeTE5Mk44cW5kdlhsNDloRmFFbmZfV1MzX0xwZ1g0YlRHYkhyNEEyckFwVUpDNEdHUG14OHhWMUppSGoyb3JUYnY2eXZnNFMxNzUwU01kR2pBbGNzQjRLUmplcVluSlF5VG9r?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2025-12-16",
+          "source": "news",
+          "headline": "Databricks’ Series L funding round raising $4B at $134B valuation - Techzine Global",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNWFE0QXNfY2FTTU9PNXgwZEZhZ0tZYVdrMFl1MUFESEZEYXJRcFphS3RoNFp0X0IySmhVa3o1c18zLVJ1clNwRnc3Vy1PVTRKZDZ6NEJVRGxmdU15TTlmWE11a0hnc3pqbXJybWcwYVZNb3l6d002MGZLM1R3TWZpNnFUMlYzZXdEaDBjS3pHQVdPSUZHaWl0YXp1MWVZSXJvYU1BX1dKZkVZeXNURFNDa1JULWFBQVU5?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2026-02-09",
+          "source": "news",
+          "headline": "Databricks closes $7B+ financing round at $134B valuation - SiliconANGLE",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNUko4UG9qMnVkX0lnc2RrSkJidkVfM1VsaFNNcmhlQVg4NnA1RkVDSXRzYmktWE5ZaXZldmgyQ0gyVFVmbGowOVJKMm9iZ3IyQnFxdVduYU9KODI2MVBqVUw5SXhDd2hpVXZqaHBrcnVSaU1SUTNpUHdIZlk3aGZrd0ZYUWdEN3Exam52NE5jTEJTZw?oc=5"
+        },
+        {
+          "value": 4000000000,
+          "date": "2025-12-16",
+          "source": "news",
+          "headline": "Watch Databricks CEO on $4B Funding Round, IPO Plans, AI - Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPV2RRbFd0Qy14dno0SkdzQU1lY2VENG9mU3o1d0dNMUhsMUdIclpLWTduVU5KdGhkSHllN0FYclBwSVlfVTR4Y3IzREJuZm9Rak85UHVrMkZkaE1lYkU3RjBoVm5pMFJRaVhNbXU2elMxRGtfWGpIc0RFUGhTX3JWby11WTh5VHpWeEZnbnhndlpFb2JJLWl4MXk0cmNNY3lPanpzalhmaFQwZw?oc=5"
+        },
+        {
+          "value": 134000000000,
+          "date": "2026-02-09",
+          "source": "news",
+          "headline": "Databricks closes $5B round at $134B valuation, eyes IPO - The Tech Buzz",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOYW1hSVlkSGw2YWpldGp4RWRmeDRPdmJuanFmaXBwaC1XU1hBNGctR3lMZ0JGYm9DOWFoWnlaNG1uamhjZElCODdiXzdDUHhHOUdZcmwwS19PX3dpSnpmdUZwWnNNa2hfZ0pYZWFXd2hQR2Q3aGtVc2RFQk5zYzA3RWM0Zk5oeVJNSWVDMkFaSQ?oc=5"
+        }
+      ]
+    },
+    "revolut": {
+      "valuations": [
+        {
+          "value": 75000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $75B"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-10-20",
+          "source": "news",
+          "headline": "An IPO Alternative: Revolut’s $75 Billion Valuation and $3 Billion Funding Round - Finovate",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNN3BPcERuOXhOYjJXQ1dfb2pRbzUzUkw1YmZhbGVTSEFWbDFBUmZobWtOSXNTdy1oUFBtR28zWEtOUUpHUnVlVVdPS3czVFhJZU4xOG9hUEpvSVNpZlc5YTV2Zl90N2FTNFZPWjF3a3Q0d2pmOEc2M2NvM29zb280bl9XMzQ3SWlmeXlMbTBVMmRORHVQQk5lMGw1ZTlDVDQ?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-11-24",
+          "source": "news",
+          "headline": "Fintech Revolut Sees Valuation Spike 67% To $75B After Secondary Share Sale - Crunchbase News",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNcjNxLWVtX1VCeFFndng2NjNKelhVenRVYjBpbjI5U0hkZGxYZ181SFdsU3dKenJZb2NnSGRaS2tRTHpUcmt1WVRkeEZBU1RCVkFBdE81cEtMXzBVci1lbGNTWEFrd0tBZ2Q2UGlfVzFieUJyQ01makFDQTJvSWIyVGJYSDZ5WFl1TGc?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-11-24",
+          "source": "news",
+          "headline": "Revolut’s Valuation Climbs to $75 Billion After Secondary Share Sale - FinTech Weekly",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPWUxEV1BOR2pUdXpqYnR4VF9zQjJnSmJQSmgxTUl0NUE3Q3ZiMXpTODBIUWluZWRBWlFGblN3UTdtSWlpQkZRcDlFVnVRTkFuTkJiM2U2ZFZLeFNHNGNRTm5UZG1mQ2NFcjVya1g3RjF2cVFDcWd0cTdqUjNpS1BmdnpvLXkzcVMyWTM2eGNtLUNWaGdQMlItMXYzTlkyVHU5cWdSeGgtZFRGYUFEcmpTYjVn?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-11-24",
+          "source": "news",
+          "headline": "Revolut hits $75B valuation in massive funding round - The Tech Buzz",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQMVVzU2pTcFVwcVdoeVFtMWpXb29nNzllZnhTeldUR0FfNUlsMy1pRHNCcVNTekZwYkJ6RVNzWkM4VWF2Z0dQOHVtWk1JQ3JObFozMUVqeXpzUFJkZEVSVDBjOS1UNUFHSGJGNElwOVBqWU5qZ2QycUNXSTVyb3ROSjlsTHNpcC1COXR0Zw?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-10-19",
+          "source": "news",
+          "headline": "Revolut Valued at $75 Billion After $3 Billion Funding Wave - PYMNTS.com",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOaGZqLThkTE42ZW1fVlI4Qm9acmF3WjRucktpQWpzUU1UMlJiaWpScTZhbEpEeWFseVllTU9qQzhsT1FRaTVVMEViVU5FdFpHeV9wMURqeGFyaF9LeGVUM1A5TnVUN1VzRmJUbXUzTnJRRUFPdWUzVkVNY2VkUjU4YnNzd3RtOGFkQVVldElaYnJDc3JzRU9iZkwtQjZ1ZFdGOGRUanhEb2xyajA?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-11-26",
+          "source": "news",
+          "headline": "Revolut valued at $75B - Banking Dive",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5OWFg4SU8wLWhZZnBZck45RXg1UC1CLXNhZk5nNEpRRVBkMmhaV0sxU3pUWVJoQllNcmtyTE9GYWM5X1Y3RDg1Vzc0ZW1VTldzV3VzaHp6VWlIOTZqNjNLdkFTQzEtUXh3RS03VkNQNE9VQnp6?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-11-24",
+          "source": "news",
+          "headline": "Revolut Notches $75 Billion Valuation in Latest Share Sale - Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQeGI2WFlmLWtYZlQxXy1Bc3V4bjdLR3pIbHZsUlh2bzlDcGI2U0phb0tWWkcwSnI2bkxUZmdnYTVfUzJSYk1FMU4td3JNNEdqelhoTldTYnZONkpyNC1HSE0xYVVOeDk3Vm1BbzV6anByV0VITHZCcDFScmM4QUpqUGZYM0FJSjA2UHhienNoTFdrOVZkVWlZTkxIallDSkt6c3JOaVljeTduRklUTmNyV0J2QUM?oc=5"
+        },
+        {
+          "value": 75000000000,
+          "date": "2025-07-17",
+          "source": "news",
+          "headline": "Revolut rockets to $75B valuation: All the details behind its $2B raise - Tech Funding News",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5VVGJ2Q2JIc0pPaVhiM1V0aDZ2clRCLTZKUXhGZ2NqbXg5UHIxUVdZc1BWMHVpcG1VclVMLUktNW5tajlFS2M5ek5VYjF2VWxIMHJBX3h6THFvR0lic0pCZkRnWVpJWlByczhpa2dFbXBnR2hvMXU2ZlRiYUpKZw?oc=5"
+        }
+      ]
+    },
+    "mercor": {
+      "valuations": [
+        {
+          "value": 10000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $10B"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-10-27",
+          "source": "news",
+          "headline": "AI startup Mercor now valued at $10 billion with new $350 million funding round - CNBC",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE5zbjJON1dIWlBqNTFVVlBta0JDNWdRblZjWE5XeGZpYnZoUHE1cnhiV0t3MGszeWhOb19WRENVME1pd01wTDlrWjVUNFRmMVJmamxobkpQZVNXZVZhbGpVTDJDbjZCYU9uel9lNHRQZHN4cFZTVzFNQdIBfkFVX3lxTFBzQXZDdnpqcFJGRUxiX1pDdEZMeThxaEd4SV9jMXJYelJLZnZRZ2VDMzdzZFVWQnR6TXRvSlhubzBpU1M5bnM4M01NZ1V4eVBISHB0T211blNldmFFZURGbFVkT0dMM3k4VThWWUZKMHZqM05tSWpDTDUtVGZVZw?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-10-27",
+          "source": "news",
+          "headline": "Mercor quintuples valuation to $10B with $350M Series C - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNbVhMLVA0aUhFYlVnaUdsZVc3elNSRzljYTQxSjJDSTFpS1VHZzhUbUliMjRET1dsMHNIRVJNTUZCU0ktaW1FYzExOG1hZUN4bEhmRVJ2alpOQk9VdlVXdExFcy0wWVJrejBnSUlDbTQwYlhiUk8xcDFqZFJ5RkRGbnFjXzJWLVE4MnZDaXd1VlA2Zw?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-10-27",
+          "source": "news",
+          "headline": "Exclusive | Mercor, the AI Startup Fueling ChatGPT’s Expertise, Is Now Valued at $10 Billion - WSJ",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQZkhhNF9UQjlLNllyYXhIWTFCbTRiaWpqS1ZsbThuZEV3YVdNQUd0bk1PNUh4N3BLVHk3eGFSS2RoZkJuejc2VDNwNE5USG5ZUTRHT3BOcXdIbnZOb2xET0ZwREtMN0RLUnN0aUwyajdSbEZoRDVRVHlsTkdELVdDY2NxUHdTY2dVLUZfRk9GdmtGdEttLWdYQlJra0hGVTd5bHdVQjF6Smhidw?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-11-05",
+          "source": "news",
+          "headline": "What Mercor’s $10B Valuation Could Mean for the Future of Work - AI Marketing Institute",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE1TRlEwVkJrQXJJNE5IbHFrWHJUWFB1MTJCRGVGVHpiMXRrR3NvMF9yZThaRThSLUJTR3M2LUcwQjhJaG91dElOMmg1Zm5MaFd0bndXUUpoNXFjR3lIOWM2dlk4NzZCNFItdlHSAXpBVV95cUxNNDJKU3VteEZiVmM5eUdwZWkyel9JZmMwa19IamluVE9XRk5odXZ3TE95SkRscGNwUUNFR0ktbW41dWhrY3ZGeWF5UTk4YkpBNWVyVzBhUGtPU1JzNEs5Y0o0amV5WjR3RHBqeEpGM1l1WkRmM05xTURyQQ?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-09-10",
+          "source": "news",
+          "headline": "Report: Investors offered to fund AI data startup Mercor at $10B valuation - SiliconANGLE",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxORHhRWE82V1ZZeEhvbGYzS1lFYTNUN3k1NEhqd3hseVEtaDZUWV9rcW5JNjBRYlk3eXFfQmZuSUR4YmJ0M1BzdkFOeW1qSHZ6S1FtSDUwRS0tLVdsT0o1amNSS3ktVnJhMU0xdzJOTzNfNkRNbmctSEg0bzlPMmk2MGZaSXRib3Nyd0w1R21XYkJxOXZsTWNnaTl4ZG5Qa2JYaEo1eFVR?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-09-09",
+          "source": "news",
+          "headline": "Sources: AI training startup Mercor eyes $10B+ valuation on $450 million run rate - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNUWhHNENTemprc2RzR3FlOG5nTkR3NzJORmZpRjBQdXRMZllrbzdXenVLbXlnUHl6SmRycXVmMk1iZ0E4UGI5YjJFb0NwQzhzaWR3N2FRb3NjQjh0UkJxb0tBODFTbVVwSXhtbmd5ZHdvT0J5SndFY0lQTE1sMXNHSEE0b0JKTDA?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-10-27",
+          "source": "news",
+          "headline": "Mercor Raises $350M at $10B Valuation for AI Training Services - News and Statistics - IndexBox",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQcjRjbUdKQnFabkZleGVrU1RXNk1JS0JtNkROQXFlZ21SQXU4dnZaV0M5bjBzaEFxeXFTWU8yR0NvRXZlSXNUdDZXcFAydkRzZnZrdHg3WDl1UVRiSlNMQVdFUXdIdUZQZ3BfZE5CYmkyem5hWkljZmJjREFibUZjY01DLURMYmlBU3phRkQxVUt0V1FfS2ljblNub24?oc=5"
+        },
+        {
+          "value": 10000000000,
+          "date": "2025-10-29",
+          "source": "news",
+          "headline": "Mercor Raises $350M to Scale Expert-Driven AI Training, Reaching $10B Valuation - AI Insider",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNdlBaSWpnUGFCYW1JWXNkaDllQXhJMDUtaXdqc1RGclRaT1BscVdOa0xJaUk2RlQxNnZGbHhfU0FDY1habXMxaFVFS3h3SjdEcUhONUZXYVJQMnE4VlBodjU2TG81emhNcWpQU0xZcDlUdTlKYzd3ejdoSVBrVXZyN1drZjl1YUFUS2xpdFJheUVjZDA1cGhrMmNjLTNQU0lmLUZmTlBJTjdBNm9SMUlUSm5FZ3o?oc=5"
+        }
+      ]
+    },
+    "airwallex": {
+      "valuations": [
+        {
+          "value": 8000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $8B"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-08",
+          "source": "news",
+          "headline": "Airwallex Raises $330M Series G at $8B Valuation, Establishes San Francisco as Dual Global Headquarters - Business Wire",
+          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxPb2dIUmtUVHZsUVQwY3NuZEV0eVQ2UmVXcWtqSDRId2RveTJBRXg3cmZTMkxzSDJzQXptaTVQWnVFRXdwdDBVTC1rT2J5bThSeXU1NHBYaElMVEJiZzd1ZU5rT1RoY1AxQXVrcC12UGw1VHk3MThFbWxSdnpCemRYZ195TkZHV25XWnUzRFlzU3JIZk50RGtZZG9EQlRvcUZRS1N3Vk51d3gwNl95V3hGbWVFamVQcHVkSWo3NGpMWlJPMmpoUE5fNENXcVVKVUYyWW5LUkZIcVpNUi1JR0dicTFqZ2FOOGxwVklKUE5ZUFV4elpxaUE?oc=5"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-08",
+          "source": "news",
+          "headline": "Stripe, Adyen rival Airwallex nabs $330M at $8B valuation - Tech Funding News",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTWo2dGZHY2VDWW1BeXBneUJGQ3FTSXlpa08xSVhXWDBzcjNFdU5ISTB4YTVfNFk0RUJHcGNEMi1tTzhwbG5UWWlUc01EZzM2eEFEUXdXa2F5Q1N0cVNTVjJUaU9RaktXeExTM0lqbGNrcVFRNzNvWVVka21RNUtBQXdhUjdqcVRCaDFBTnVPQ1hQTDdwNXc2dTYwSkU?oc=5"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-07",
+          "source": "news",
+          "headline": "Payments Startup Airwallex Raises Money at $8 Billion Valuation - Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNUlliM2tGZDJfZ3RRRVlzUzBxU1RnOHN6VHZrZHZlU2xGdWptUjNEb0ZGRzBlYW9KLVNjSm1idHJZa0NrVkV5VUJUM1lrSy1kT3pTVWh6T2Itai1iVUxPa3NDNW1hVUZRNFZfdWJJTllqNG9LN29BY293aWxOR0U1NGpUalhUVGRkZWJsSGxFYlloRW16ZWdIMXhtTnh3N1F2YWhVaGl0OE5mRFVyZkhkSW9Zdw?oc=5"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-08",
+          "source": "news",
+          "headline": "Airwallex raises $330 million at a valuation of $8 billion - Finextra Research",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOUFU0LWVSTnRCRndKUjBMTW5ORUNzWU5XMGlFU1VCVU1rV2ZCMHhJSlZMX3FMdmZyV1FybHIxY0c1akZiXzN3OUdyWW5mcGhlWUlMcmxPZjJtVnMyMzQ3TzJTQlFHVVFrcklxbWVyQk9KSEFvSkd2ZE9nTGVpWFVsWEQtM2RERWdpVVd5amxpaVl5MFFMRGcyVl9NNVFDX19t?oc=5"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-08",
+          "source": "news",
+          "headline": "Airwallex: $330 Million Series G At $8 Billion Valuation Raised For Fintech Platform - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE0xUFRBbDcwSHBsSGJacTg3MHBJQ2psd1Jkb2hxOTNaM1ZRUWtQUGdvNlZrWlVnU2N3c2pCcmdsZXB0aEpQR2ZxdGhqYlI5bEZuUjc1QTZFLXlUUU1uTEJj0gFkQVVfeXFMTlRxeXpxTjhIR0ZLWG9CM196NUsxMHZqWmxJSEl1dXE1U0hPUmg0eTlWQ0pOQXlJWUg0THRlTnZNQm9UNjZQaEVVUWpUVkE3dGItSFhNQVJXX1dfTzhIQ3NFb1hGNg?oc=5"
+        },
+        {
+          "value": 8000000000,
+          "date": "2025-12-08",
+          "source": "news",
+          "headline": "Airwallex Eyes ‘Borderless’ Banking as Valuation Hits $8 Billion - PYMNTS.com",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQcndIUUp0WmJTWUVqUjEwZ2xLQ1l1RUFDLUlzRlF1V1VrRjJsU0J1Y3ZSWjlUQ0xkeVY5V2wyOEdZcjAybDNlbm1fc1F4XzJEZnZXT2lnZVFNaDZqZjgwTTNUbWItX2g3VElRLUMtNFdnRDhILUpxS1ByTlpsZUFZdVQya1RacEZiUXY4NlBFNWlNUld5YVRZZUlHNVp6ckVucGVoZGpEeldJM0hEbUF5czhKUjBiQQ?oc=5"
+        }
+      ]
+    },
+    "oura": {
+      "valuations": [
+        {
+          "value": 11000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $11B"
+        }
+      ]
+    },
+    "ramp": {
+      "valuations": [
+        {
+          "value": 32000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $32B"
+        },
+        {
+          "value": 40000000000,
+          "date": "2026-05-10",
+          "source": "news",
+          "headline": "Fintech Ramp Eyes $40 Billion+ Valuation In New Funding Round Talks - Crowdfund Insider",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQVlRDRHJiLVQ1VjZSMldXdU9NXzBTbHU3akJGSnhmRWZkSy1NZ2h1clJXYnNmbVFDaWM4ZDhlb3RPaFJ4a3lSWjhkbTJqLTBMLWZ0MHNQQTBXbmp6cnlPbFRWVzU3VjE0TFJkZy14LU1GckN1VU1aUFVqYXNxVG5hMzdJb3czTkVkV2tjcWdKa3hQaU1iM0psVmV6bnRLdkpUUnZFN2VKMWY1SGU5cDRHVHFvb0k?oc=5"
+        },
+        {
+          "value": 32000000000,
+          "date": "2025-11-17",
+          "source": "news",
+          "headline": "Fintech Ramp Now Valued At $32B After $300M Raise Led By Lightspeed - Crunchbase News",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQRkFUMVZEaWJ6ejlZSGxYNTY2aVFBYk5CcklKSWY5OWJoLURrXzdwNXhxeko4VlQxY2xCZE5PV0lSTVh3eThBSmxQcmY0SjVQbWoyQjNKZnpBRjY1QWxJVTliaGh1M0xfY1NtTFZZZTZUU3VMZTBydnFfRmRaUzBmcFBKakhudw?oc=5"
+        },
+        {
+          "value": 22500000000,
+          "date": "2025-09-04",
+          "source": "news",
+          "headline": "Exclusive: Fintech startup Ramp hits $1 billion in annualized revenue after notching $22.5 billion valuation - Fortune",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPb241anh3V05aYUJ6Qy15aG1WeUpTaFgzSWc1STF0ZGpFblJzOWlkTXJwV2w1UWdxWHk2MnpyaHcwSXJEN2FURTQxckJtdTBRQnRwY3BBSmptTGRPdzAyemN5SkR1NDRZdFpBT2hmRUVNenlBN0o4WkN6OVB5azA2NXQ5Q190XzA5RHY2dmczcHRoaVhnT3I4U0ZBanlteVU3MkU0NzV2clotUQ?oc=5"
+        },
+        {
+          "value": 22500000000,
+          "date": "2025-07-30",
+          "source": "news",
+          "headline": "Fintech Ramp valued at $22.5 billion in late-stage funding round - Reuters",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOczltSjItZUNHWnZxWlR3dmg5bHBfSE1vLWdjNkxJME1odURWMjNFOU5kX0lWYnAwR2Z3cUg3VnAxQ0ZfaG9RQzVHN3VrbTRpRGJCbDBWd2tPUzZNbDVnV0xPSHBuTFpLdkRIVlR0WmJYbjJCaXRyZmtTTTR0UDlGXzBkOVdQb0ROTWlGd0VmZXQ4VU5hdXZfQWh6UmFfQmNqYXpKeTJB?oc=5"
+        },
+        {
+          "value": 40000000000,
+          "date": "2026-05-08",
+          "source": "news",
+          "headline": "Ramp in talks to hit $40B+ valuation, 6 months after reaching $32B - The Tech Buzz",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQUmliXzFsQ3NNNnp2VlgwSnl0Z0VlS2Ywd1pYcUpSZXVUSUhjYU1xREp2VkRFMllRRkJwa19hNUpwRFF0OUI5anplYTlnT1VVazF0bmp4c0lVS1NTb3pVeXhfY2hibW1YYlB0bzZrQXRaa21yRDMyY1kzMTY3Q3oyTmRCN1ZlLVlVZjZIU3BnSXVfZnk3XzZaWjdKNA?oc=5"
+        },
+        {
+          "value": 32000000000,
+          "date": "2025-11-17",
+          "source": "news",
+          "headline": "Ramp hits $32B valuation with new $300M funding round as investors double down on 'autonomous finance' - MLQ.ai",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNRmxTamIwREc4Mzd5UjlJdElHR0NYSDhMdW5qeU5wQ1dtTEtwdEp6ZUdBMDRGbWUxdW1sMW9kcjlMeU9LNlNNTk9tZjZfS1lPZVNJSE9yeGowWDJIOTNKdGJ5ejdDNG91bl9vT3JYdTk4RjYxejR3RjktU3JFN0NhSmNzNVprZ1NfTTdnaWZudnFObnQ1SnlESGRyaEMwa1N4YmRxRWNiV1I2ZU5FZG1TeEk1azl0OHg3TEpz?oc=5"
+        },
+        {
+          "value": 22500000000,
+          "date": "2025-07-30",
+          "source": "news",
+          "headline": "Exclusive | AI Finance App Ramp Is Valued at $22.5 Billion in Funding Round - WSJ",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPUkl5TXJ0cmF6RUt2OTdreF9uaUxFanJ2eE5NbV85Zk1jTS1wVy1HeElYVFIzTDc5MTlEbXJ2Mmw3UHVCQWlHR3FadTU4VWpybEh1T05sYTF6cEdnVHA5Z1BXYTk3bnNvQWN0U3hsRzh1bEUwQ2hTSjZqanpOU2NXTGVlSExWSTVKbGNyem1OckRfRVZzQmtWSk91czFJUk0zR3c?oc=5"
+        }
+      ]
+    },
+    "openai": {
+      "valuations": [
+        {
+          "value": 840000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $840B"
+        },
+        {
+          "value": 122000000000,
+          "date": "2026-03-31",
+          "source": "news",
+          "headline": "OpenAI raises $122 billion to accelerate the next phase of AI - OpenAI",
+          "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE92bDc0Y3Myc2RjdHlZVUNEdVN4SjMzZVJlcjRVR3V1UzRCT3NqRHdkbXp5dFdUdUpUcUdGYVVoNS1DX0xUbHJSYXpDbkRTYnpGbGVwMFl2RTFsWmp2N0RvYjhZOW1NWTg?oc=5"
+        },
+        {
+          "value": 122000000000,
+          "date": "2026-03-31",
+          "source": "news",
+          "headline": "OpenAI closes record-breaking $122 billion funding round as anticipation builds for IPO - CNBC",
+          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTFBQdGpYaWFOM1pPUEpvckhWbHpJbXNTUzI4ajRHRTlOdXJjdzZOSzJQd0NzVjNaOWVtdGQ4Q0R3WWZxRjZpb1BHVmxadllqSU9STEZBU3p2YUVhSkE3bnI5cWQzOGpSTGcwMkU3UThB0gFzQVVfeXFMT2l5MW95UndVNWdBZldmVzBFWFpFWEpUUTNBZHlaaTdBMGZyQkRFWUJKV1A4NDlhai1ySEFuaVI3UERnRFhGMU55c0sxRlV4UEcwdjNxendlamtTd3p5dm5zV0hvcFM5VUJQNGJIeFR0bkxiMA?oc=5"
+        },
+        {
+          "value": 900000000000,
+          "date": "2026-05-04",
+          "source": "news",
+          "headline": "Anthropic’s $900 Billion Funding Round Set To Surpass OpenAI - Forbes",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOUGZobm94aTBZNllXRzBkeld3X3RFNU9ieDZ3c29LQ195TFFKZ1FOYk12Q202UHYtWXllLWpsYmRQN05SaG9uRW1XN2NCbkQ2RkZCaHZadWZ1Q3U3RV91ODlkZEZwM2RRbjFxZ1pfd19sUTZMOGpjY193Q18tQzR1YkE3VmJ4QjByQzRoY1hCT09jdk1UTmJTYXBiOERLeTR0aDAzVDhB?oc=5"
+        },
+        {
+          "value": 950000000000,
+          "date": "2026-05-12",
+          "source": "news",
+          "headline": "Anthropic in Talks to Raise Funding at a $950 Billion Valuation - The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNVXlYUDFLdEJoaFFQTktLaFJiUkNtY3dLa3NMc2ktVmE5ODM4alJtd0lQd0VaSVM0UHBtNk03V3VobnBUM3lveV9oTnA5TXdBRTJTQ2M3cnplNlFaZEJtZ2tqa3pPWU1oenE5Q3E4LTEzUGRkVmd3ZTROVlFueC1RZ29qdGVSM1hGMDk2ZnJFWmNlQ3ZJ?oc=5"
+        },
+        {
+          "value": 900000000000,
+          "date": "2026-05-15",
+          "source": "news",
+          "headline": "Anthropic Nears $900B Valuation, Overtaking OpenAI in AI Race - Sri Lanka Guardian",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxORFZPeEV5N0dLNDVjM0R4M0hiWXdLcVBvb09FS1NHWHJIcER0RnV3Yzl4OTJLaU1uVEpyTTlKZXBwT0lRMThzTGNPTnJIVEs1TXhEWWZwRjZjYWJ0ZHRtMTg3d010Si1SSGdhMkp6Z00xM0RkRC1UOF9JRm1yRDZXU0E3VHR3YU9nY05r?oc=5"
+        }
+      ]
+    },
+    "elevenlabs": {
+      "valuations": [
+        {
+          "value": 11000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $11B"
+        },
+        {
+          "value": 11000000000,
+          "date": "2026-02-04",
+          "source": "news",
+          "headline": "ElevenLabs secures $11 billion valuation in latest funding round - Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNM1g0NUtOeGoxUmZ4Wl9vUlloOWh4c2padEJXSEpneGJDeHh4aDE4RnRidV9acnV5dkZtcm1mVlE3Y1VEeUNwZ3dHZm9OQXpCN01WaU4xZzFMQmFCOWIxdXkwYVB1NUVOVVZLM1B2b3drNWNyQk9nNzllRF9BMjlkdTRIbkIxam9sel9tUUtTNzNLY2tfRGVzLVRqYUdIZEdaNnBscHBXM0FUbmxVT1E?oc=5"
+        },
+        {
+          "value": 11000000000,
+          "date": "2026-02-04",
+          "source": "news",
+          "headline": "ElevenLabs raises $500M from Sequoia at an $11 billion valuation - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPY185VEVVR21GZ29CSnRKNVlqTG1sMEZUakh2eGVEZUthQkNJek1aQTRfQXc1WllFTHV5THRLN0VHTXVidzJfUFBJNFBDYXJPbV9LYWhtb3hvelNsZF9vWUd6eUN0T3pKZnJDWkN6LXJla21YY3J1Y01Od0NBTXFPTmdsZEphMTUzUE1XZkJOMkhNV3F6eXlKMzNGTlNhZw?oc=5"
+        },
+        {
+          "value": 6600000000,
+          "date": "2026-05-05",
+          "source": "news",
+          "headline": "Eleven Labs Revenue 2026: $500M ARR, $6.6B Valuation - GetLatka",
+          "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTFBOcHhPNEY5Nnd2d2c0OEhVaWc2QTlTNG45TmJIRmFoamJ3ZmZseU91aTNiT0o2aGZzUGdldFc1N1QydmdXamtOaUNDR1Q1UzQ5bHVUYjJfRQ?oc=5"
+        },
+        {
+          "value": 11000000000,
+          "date": "2026-02-04",
+          "source": "news",
+          "headline": "Nvidia-backed AI voice startup ElevenLabs hits $11 billion valuation in fresh fundraise, as it eyes IPO - CNBC",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQbDhDb2U5ZzVsOEhMdDktNjgzZzV1WXNmYmNBSV9TaDJnelNQZXc5U21nNXc2ei1QcEhkZVBHa3NPMXFiZUZQS1Z3b2dmcFZVR2JNUXJXV1U2dnZMVWtoejRLOThuZm50a3hyQnZ6akhsZ0ZsQjZ3MXNpdFZLYnFNdGdUVWdSVFcyd1p4NkdOZVNmQ1hnRTZkMNIBngFBVV95cUxORkRWajV4d3JyZXotZF9WTExYbjRvSHRvUjlHdWNia1FpWjNUTDlLemVvcE4wUWNBdV9WV2draVJqNTlPMm83bGRBcTk2V2pTcGNiODFaYTJaREhGQ0IwX0trV0RKMzhmSjltVDkxdG9FSC1LVFRmMnlocHVFRENPQTF6b05FQXZBTng4cUsxMElEazJrRmk2VW1FbkxHQQ?oc=5"
+        },
+        {
+          "value": 11000000000,
+          "date": "2026-02-04",
+          "source": "news",
+          "headline": "ElevenLabs scores $500M, secures $11B valuation - MobiHealthNews",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxObXhzSk9aSUZBM0N1Nm9zNGdvbEgxSEhsNzZWbG9obFdRR012cDlFT0JZRFlDdFJHSS0tQjBBQllUSHNXeW5lQ1Z1QnlCc1BLdFh2R3FQeVNOUjNrZjZ6WWtMaWdmb0ZKTEJrV1RDdmtjdFpoV3ZocFdFTjZDbGZvWEVTM1VnZzg?oc=5"
+        }
+      ]
+    },
+    "stripe": {
+      "valuations": [
+        {
+          "value": 159000000000,
+          "date": "2026-05-15",
+          "source": "cbinsights",
+          "label": "CB Insights Unicorn List: $159B"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "Fintech Giant Stripe’s Valuation Soars to $159B In Latest Secondary Stock Sale - Crunchbase News",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOYUo1bHN0WWV6bEZNdHVaVTd1alViaXFkV1l2eHFqMC1FQ2NlZXhNMU1PdDhCQnBoN2QxdFZ5QURIT1RyaGZoeGlpUi03b2xpRFVZN1NpZWpFMzVEeUhoR095S183eTJ5TVd4R3pZYWMxV1BfTkpKSGk4R2NVYU5YZ0tR?oc=5"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "Stripe valued at $159 billion after tender offer for employees, shareholders - CNBC",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9KWkdYVWwzQ0lqZGo2UVMxc2lLR1BweXROWGJHalNhR0lfMnNsdm0zVzB6OVRpQnVsaHNDVW5LU21rU3Npa3R4a1BtQW9vWW5GZnE2cS11Sk9fWlFidmZwNUlQTldoN0dNVGRSTWlJaW5LbzVQMEZYbTdwUGU4QdIBgwFBVV95cUxObGdwdjVKbFllVk4tNS00N1YzQUtJOGs3Y0ZCUjlhOWozWF9UNjdJbFdEekdKeHVZUUU0MnNIME1yN3RRSV9MSzc1NWJEMVhOTzVPVjJKWmV3eGU2dEttVGxwajJvZ0dLSEVCajJuQjZ5THo1LVk5NW9UUlFMSXNfS0cwTQ?oc=5"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "'Stablecoin Summer': Stripe Makes Tender Offer at $159 Billion Valuation - Decrypt",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNRkRNYTRjOXF0WkZFNU8wWUVrazVscmdSalFCOU5XTldmYVRtQW1hVjM2TDNZbkdwNTBydVNMOVZDN0pLOUNISEtuYnFzY01ic2syWmp1SkxMbFlERUxHamlrRkdPazhJOVFMQjcySHZoZkJxX081cTBqY2NBSDdkemFuUWJzRzBBaWlYTmp30gGWAUFVX3lxTE1WRUxXeXNmYlZrNnJzWjJoRVJFNmEycnVxSEkwN1Vuc05qTjZZaHdHSXJ0SjZ3VzJfNEZURHFkTzB3aHF2cWhKcWpZOWNJLWliSzlrOGJYTW00ZDBaLWpsWTVCTkpucmpJTjg5cnpkUm13bXZPMlVGQm1jcDBqRUF5OVRadjJPOWFMNXJMZXFRd1J1YWxTUQ?oc=5"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "Stripe valuation jumps to $159 billion in latest employee share sale - Reuters",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQOWk5UDVtNGpSZ1ZUaHRhaFdReVVIUXktTV95WHdDcld1T0dVaVNDQTU4dkRHRU1ESnVYSnR1eUxsQ3lpNmtNMFFSUS14cUNtVmxBOXpsS3NsaF9Wa0I4UGdlUzZOR29iWE5lUDYtUEExY0d6Q29mUTVUTVlkWjlUX1RwZlVOTHllVzl3TkJyU3RQNVZ0QUh5Vmg1UlV3QQ?oc=5"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "Stripe valuation jumps to $159 billion on back of tender offer - The Block",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOOWF2OWpSenZpM29VeWVERGluazd3dVNmZjNrWTNZcjhFZkp1SEtRbGdaNS0wSUZ0MWVhakVsZkhndXJzcWFodklIUXpaZXZzeDhJdm1BWDVDZV90SVFETTVlbldlM3RlaWtFMjFrZW1Fei04RGZURUJ6TFFEa2lLbnJfX1c3WVFpTndsYkx2eTFxMnVWREkydUFlZHd1QQ?oc=5"
+        },
+        {
+          "value": 140000000000,
+          "date": "2026-02-09",
+          "source": "news",
+          "headline": "Stripe Valuation Set to Hit $140 Billion in New Tender Offer - Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPNWxGQkJxWklNSjltSTc4c19FeFYxeGlDaWM2OXJwS2RxSHlMMVBOZG5MT2FzdGE5WWtSVjFHQkZ0enFFb1NzOUFZQm4tczFlNVVDOEJ2YldGRDdfaHdTdDJNTUNNTFVHNWU3U1BnWUFFYVAzU09vV3BvMlI0bWZBNHJpejNpcHJYU2J0RFJyQ1B1Tnp0c3NLTjNiaEs2eVBTdWRjd1l2RHhqeWJZbW9V?oc=5"
+        },
+        {
+          "value": 159000000000,
+          "date": "2026-02-24",
+          "source": "news",
+          "headline": "Stripe valued at $159B in tender offer - Payments Dive",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOSU00cDM4Z1BYbHBUYUNkMEwxTC1Uc0VBOXlKSUprcy1LT3pWcGxOQW16czJSV2I1WDlpM1dHMDN3dFZHOGJKajhTQVl0MTFrWjEtVjNVXzlUTlcxRzZXNEhzZEs4VWhGbTZsYWJVRnUzZldnckZEaWxkQk1RZ2ZvcGNnNXdKUVl2VGxjYVBDbkE0eE0zRkJN?oc=5"
+        }
+      ]
+    },
+    "boom": {
+      "valuations": [
+        {
+          "value": 1500000000,
+          "date": "2025-12-09",
+          "source": "news",
+          "headline": "Boom Supersonic raising $300M at a $1.5B valuation - BusinessDen",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPdjFHUmw4RzRVMFRCSHRwZXQweGxEUkNaazVVeHJSYktsek1DVGVhMDl2RkdvWHpaZWI4Rk1xLUxXMlJEdGRDWFFZdkVmWXhCSFdxUXlWUFdqMUtwZkJLa2NkSExYcmpPZmxwakI0Nk9zd2ZWRnhMSklUTnQ5SDlvc3VxdDE5NHNiWGczRw?oc=5"
+        }
+      ]
+    }
+  }
+}

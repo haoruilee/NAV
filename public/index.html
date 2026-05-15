@@ -261,15 +261,34 @@
           <span class="text-[11px] text-txt-faint font-mono" id="nav-date">--</span>
         </div>
 
-        <!-- NAV big numbers -->
-        <div class="flex gap-6 mb-5">
+        <!-- Official NAV -->
+        <div class="flex gap-6 mb-4">
           <div class="flex-1">
-            <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-1.5">NAV / Share</div>
+            <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-1.5">Official NAV</div>
             <span id="nav-value" class="text-3xl font-bold font-mono text-white">--</span>
           </div>
           <div class="flex-1">
             <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-1.5">Premium</div>
             <span id="premium-value" class="text-3xl font-bold font-mono">--</span>
+          </div>
+        </div>
+
+        <!-- Estimated NAV -->
+        <div class="bg-bg/60 rounded-xl p-3 mb-4 border border-border">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-txt-faint uppercase tracking-wider">Est. NAV</span>
+              <span class="w-2 h-2 rounded-full" id="est-confidence-dot" style="background:#64748b"></span>
+            </div>
+            <span class="text-[10px] font-mono" id="est-confidence-label" style="color:#64748b">--</span>
+          </div>
+          <div class="flex items-end gap-3">
+            <span id="est-nav-value" class="text-2xl font-bold font-mono text-white">--</span>
+            <span id="est-nav-change" class="text-sm font-mono mb-0.5">--</span>
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <span class="text-[10px] text-txt-faint" id="est-nav-detail">Based on latest company valuations</span>
+            <span class="text-[10px] font-mono" id="est-premium-value" style="color:#64748b">--</span>
           </div>
         </div>
 
@@ -295,7 +314,7 @@
             <span class="text-[11px] text-txt-faint uppercase tracking-wider">Source</span>
             <span class="tag bg-green/10 text-green border border-green/20" id="nav-source">SEC EDGAR</span>
           </div>
-          <div class="text-[11px] text-txt-faint mt-2">NAV updated quarterly from SEC filings. Auto-checked every 6 hours.</div>
+          <div class="text-[11px] text-txt-faint mt-2">Official NAV quarterly (SEC). Estimated NAV from 5 data sources, refreshed every 6h.</div>
         </div>
       </div>
     </div>
@@ -315,7 +334,45 @@
       <div id="price-chart" style="height: 420px;"></div>
     </div>
 
-    <!-- Row 3: Holdings + Fund Details -->
+    <!-- Row 3: Holdings Valuation Tracker -->
+    <div class="glass rounded-2xl p-6 glow-card">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">Holdings Valuation Tracker</span>
+          <span class="tag bg-green/10 text-green border border-green/20" id="val-source-count">--</span>
+        </div>
+        <span class="text-[11px] text-txt-faint font-mono" id="val-last-updated">--</span>
+      </div>
+      <div class="overflow-x-auto -mx-2">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[11px] text-txt-faint uppercase tracking-wider">
+              <th class="text-left px-2 pb-3 font-medium">Company</th>
+              <th class="text-right px-2 pb-3 font-medium">Weight</th>
+              <th class="text-right px-2 pb-3 font-medium">Filing Val.</th>
+              <th class="text-right px-2 pb-3 font-medium">Latest Val.</th>
+              <th class="text-right px-2 pb-3 font-medium">Change</th>
+              <th class="text-left px-2 pb-3 font-medium">Source</th>
+              <th class="text-right px-2 pb-3 font-medium">Data Age</th>
+            </tr>
+          </thead>
+          <tbody id="val-table-body" class="divide-y divide-border">
+            <tr><td colspan="7" class="text-center py-8 text-txt-faint">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4 pt-4 border-t border-border flex items-center justify-between">
+        <div class="flex items-center gap-4 text-[10px]">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green"></span> &lt; 30 days</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> 30-90 days</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red"></span> &gt; 90 days</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-txt-faint"></span> No data</span>
+        </div>
+        <div class="text-[10px] text-txt-faint" id="val-sources-detail">Sources: SEC EDGAR, CB Insights, Google News</div>
+      </div>
+    </div>
+
+    <!-- Row 4: Holdings + Fund Details -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
 
       <!-- Holdings (3 cols) -->
@@ -398,14 +455,14 @@
   <!-- Footer -->
   <footer class="max-w-[1400px] mx-auto px-6 py-6">
     <div class="flex items-center justify-between text-[11px] text-txt-faint">
-      <span>Data: Yahoo Finance &middot; NAV: SEC EDGAR (auto) &middot; Not financial advice</span>
+      <span>Data: Yahoo Finance &middot; SEC EDGAR &middot; CB Insights &middot; Google News &middot; Not financial advice</span>
       <span class="font-mono" id="footer-time"></span>
     </div>
   </footer>
 
   <script>
     // ===== State =====
-    const state = { quote: null, navHistory: [], holdings: null, isMarketHours: false, currentPeriod: '3m' };
+    const state = { quote: null, navHistory: [], holdings: null, estimatedNAV: null, isMarketHours: false, currentPeriod: '3m' };
     let priceChart = null, lineSeries = null, volumeSeries = null;
     let holdingsChartInstance = null, premiumChartInstance = null, refreshTimer = null;
     let lastPrice = null;
@@ -518,6 +575,9 @@
           : 'linear-gradient(90deg, #00e676, transparent)';
         bar.style.opacity = '0.5';
       }
+
+      // Re-render estimated premium when quote updates
+      renderEstimatedNAV();
     }
 
     async function loadNavHistory() {
@@ -737,6 +797,120 @@
       });
     }
 
+    // ===== Estimated NAV & Valuation Tracker =====
+    async function loadEstimatedNAV() {
+      try {
+        state.estimatedNAV = await fetchJSON('/api/estimated-nav');
+        renderEstimatedNAV();
+        renderValuationTracker();
+      } catch (e) { console.error('Estimated NAV failed:', e); }
+    }
+
+    function renderEstimatedNAV() {
+      const d = state.estimatedNAV;
+      if (!d) return;
+
+      const estEl = document.getElementById('est-nav-value');
+      const confDot = document.getElementById('est-confidence-dot');
+      const confLabel = document.getElementById('est-confidence-label');
+      const changeEl = document.getElementById('est-nav-change');
+      const detailEl = document.getElementById('est-nav-detail');
+      const estPremEl = document.getElementById('est-premium-value');
+
+      estEl.textContent = fmtUSD(d.estimatedNAV);
+
+      // Confidence colors
+      const confColors = { high: '#00e676', medium: '#fbbf24', low: '#ff5252' };
+      const confLabels = { high: 'High Confidence', medium: 'Medium', low: 'Low - Stale Data' };
+      confDot.style.background = confColors[d.confidence] || '#64748b';
+      confLabel.textContent = confLabels[d.confidence] || '--';
+      confLabel.style.color = confColors[d.confidence] || '#64748b';
+
+      // Change from official NAV
+      if (d.officialNAV) {
+        const change = d.estimatedNAV - d.officialNAV.nav;
+        const changePct = (change / d.officialNAV.nav) * 100;
+        const isUp = change >= 0;
+        changeEl.innerHTML = `<span class="${isUp ? 'text-green' : 'text-red'}">${isUp ? '+' : ''}${change.toFixed(2)} (${fmtPct(changePct)})</span>`;
+        detailEl.textContent = `vs. official $${d.officialNAV.nav.toFixed(2)} from ${d.officialNAV.date}`;
+      }
+
+      // Estimated premium vs market price
+      if (state.quote?.price && d.estimatedNAV) {
+        const estPremium = ((state.quote.price - d.estimatedNAV) / d.estimatedNAV) * 100;
+        estPremEl.textContent = `Est. premium: ${fmtPct(estPremium)}`;
+        estPremEl.style.color = estPremium >= 0 ? '#ff5252' : '#00e676';
+      }
+    }
+
+    function renderValuationTracker() {
+      const d = state.estimatedNAV;
+      if (!d) return;
+
+      const tbody = document.getElementById('val-table-body');
+      const srcCount = document.getElementById('val-source-count');
+      const lastUp = document.getElementById('val-last-updated');
+      const srcDetail = document.getElementById('val-sources-detail');
+
+      // Count active sources
+      const activeSources = Object.values(d.sources || {}).filter(s => s.status === 'ok').length;
+      srcCount.textContent = `${activeSources} sources`;
+
+      if (d.lastUpdated) {
+        const ago = Math.floor((Date.now() - new Date(d.lastUpdated).getTime()) / 60000);
+        lastUp.textContent = ago < 60 ? `${ago}m ago` : ago < 1440 ? `${Math.floor(ago / 60)}h ago` : `${Math.floor(ago / 1440)}d ago`;
+      }
+
+      // Source details
+      const srcNames = [];
+      if (d.sources?.cbinsights?.status === 'ok') srcNames.push('CB Insights');
+      if (d.sources?.news?.status === 'ok') srcNames.push('Google News');
+      if (d.sources?.formD?.status === 'ok') srcNames.push('SEC Form D');
+      if (d.sources?.efts?.status === 'ok') srcNames.push('SEC EFTS');
+      srcDetail.textContent = srcNames.length ? `Sources: ${srcNames.join(', ')}` : 'No sources loaded';
+
+      // Table rows
+      tbody.innerHTML = d.holdings.map(h => {
+        const filingVal = h.valuationAtFiling ? `$${(h.valuationAtFiling / 1e9).toFixed(1)}B` : '--';
+        const latestVal = h.latestValuation ? `$${(h.latestValuation.value / 1e9).toFixed(1)}B` : '--';
+        const changePct = h.multiplier !== 1 ? ((h.multiplier - 1) * 100).toFixed(1) : '0.0';
+        const changeColor = h.multiplier > 1 ? 'text-green' : h.multiplier < 1 ? 'text-red' : 'text-txt-faint';
+        const changePrefix = h.multiplier >= 1 ? '+' : '';
+
+        // Data freshness dot
+        let freshColor = '#475569'; // no data
+        if (h.dataAgeDays !== null) {
+          if (h.dataAgeDays < 30) freshColor = '#00e676';
+          else if (h.dataAgeDays < 90) freshColor = '#fbbf24';
+          else freshColor = '#ff5252';
+        }
+
+        const srcLabel = h.latestValuation ? {
+          cbinsights: 'CB Insights', news: 'News', formD: 'Form D', efts: 'EFTS'
+        }[h.latestValuation.source] || h.latestValuation.source : '--';
+
+        const ageLabel = h.dataAgeDays !== null ? `${h.dataAgeDays}d` : '--';
+
+        return `<tr class="stat-row">
+          <td class="px-2 py-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:${freshColor}"></span>
+              <span class="text-txt font-medium">${h.name}</span>
+              <span class="text-[10px] text-txt-faint">${h.sector}</span>
+            </div>
+          </td>
+          <td class="px-2 py-2.5 text-right font-mono text-txt-muted">${h.weight}%</td>
+          <td class="px-2 py-2.5 text-right font-mono text-txt-muted">${filingVal}</td>
+          <td class="px-2 py-2.5 text-right font-mono text-txt font-medium">${latestVal}</td>
+          <td class="px-2 py-2.5 text-right font-mono ${changeColor} font-medium">${changePrefix}${changePct}%</td>
+          <td class="px-2 py-2.5 text-left">
+            <span class="tag bg-border text-txt-muted">${srcLabel}</span>
+          </td>
+          <td class="px-2 py-2.5 text-right font-mono text-txt-faint">${ageLabel}</td>
+        </tr>`;
+      }).join('');
+    }
+
     // ===== Market Status =====
     async function checkMarketStatus() {
       try {
@@ -760,7 +934,7 @@
     // ===== Init =====
     async function init() {
       initPriceChart();
-      await Promise.all([refreshQuote(), refreshChart('3m'), loadNavHistory(), loadHoldings(), checkMarketStatus()]);
+      await Promise.all([refreshQuote(), refreshChart('3m'), loadNavHistory(), loadHoldings(), loadEstimatedNAV(), checkMarketStatus()]);
       startAutoRefresh();
       setInterval(async () => {
         const was = state.isMarketHours;

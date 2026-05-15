@@ -1,0 +1,148 @@
+{
+  "sharesOutstanding": 27250000,
+  "cashPosition": 390000000,
+  "cashAsOfDate": "2026-01-31",
+  "filingBaseDate": "2026-01-31",
+  "filingAccession": "0001628280-26-015785",
+  "companies": {
+    "databricks": {
+      "name": "Databricks",
+      "weight": 23.24,
+      "sector": "AI/Data",
+      "cik": "0001587468",
+      "newsQuery": "Databricks valuation OR funding round",
+      "cbInsightsName": "Databricks",
+      "positions": [
+        { "security": "Series K Preferred", "costBasis": 24999900, "fairValue": 31666540, "acquisitionDate": "2025-10-31", "pricePerShare": 150.00 },
+        { "security": "Preferred Stock", "costBasis": 49999830, "fairValue": 49999830, "acquisitionDate": "2025-12-16", "pricePerShare": 190.00 }
+      ],
+      "totalFairValue": 81666370,
+      "valuationAtFiling": 62000000000,
+      "valuationAtFilingSource": "Series K round Dec 2024"
+    },
+    "revolut": {
+      "name": "Revolut",
+      "weight": 14.30,
+      "sector": "Fintech",
+      "cik": null,
+      "newsQuery": "Revolut valuation OR funding round",
+      "cbInsightsName": "Revolut",
+      "positions": [
+        { "security": "Ordinary Shares", "costBasis": 50248750, "fairValue": 50248750, "acquisitionDate": "2026-01-29" }
+      ],
+      "totalFairValue": 50248750,
+      "valuationAtFiling": 45000000000,
+      "valuationAtFilingSource": "2024 secondary sale"
+    },
+    "mercor": {
+      "name": "Mercor",
+      "weight": 14.23,
+      "sector": "AI",
+      "cik": "0002094457",
+      "newsQuery": "Mercor AI valuation OR funding round",
+      "cbInsightsName": "Mercor",
+      "positions": [
+        { "security": "Series C Preferred", "costBasis": 49999308, "fairValue": 49999308, "acquisitionDate": "2025-10-10" }
+      ],
+      "totalFairValue": 49999308,
+      "valuationAtFiling": 2000000000,
+      "valuationAtFilingSource": "Series B 2024"
+    },
+    "airwallex": {
+      "name": "Airwallex",
+      "weight": 7.11,
+      "sector": "Fintech",
+      "cik": null,
+      "newsQuery": "Airwallex valuation OR funding round",
+      "cbInsightsName": "Airwallex",
+      "positions": [
+        { "security": "Series G Preferred", "costBasis": 25000002, "fairValue": 25000002, "acquisitionDate": "2025-11-21" }
+      ],
+      "totalFairValue": 25000002,
+      "valuationAtFiling": 5600000000,
+      "valuationAtFilingSource": "Series E 2022"
+    },
+    "boom": {
+      "name": "Boom Supersonic",
+      "weight": 7.11,
+      "sector": "Aerospace",
+      "cik": "0001671828",
+      "newsQuery": "Boom Supersonic valuation OR funding round",
+      "cbInsightsName": "Boom Supersonic",
+      "positions": [
+        { "security": "Preferred Stock", "costBasis": 24999999, "fairValue": 24999999, "acquisitionDate": "2025-12-02", "pricePerShare": 1.20 }
+      ],
+      "totalFairValue": 24999999,
+      "valuationAtFiling": 1500000000,
+      "valuationAtFilingSource": "CB Insights unicorn list"
+    },
+    "oura": {
+      "name": "Oura",
+      "weight": 7.11,
+      "sector": "Health Tech",
+      "cik": null,
+      "newsQuery": "Oura Health valuation OR funding round OR Oura Ring",
+      "cbInsightsName": "Oura",
+      "positions": [
+        { "security": "Preferred Stock", "costBasis": 24999994, "fairValue": 24999994, "acquisitionDate": "2025-12-19", "pricePerShare": 53.57 }
+      ],
+      "totalFairValue": 24999994,
+      "valuationAtFiling": 5200000000,
+      "valuationAtFilingSource": "Series D 2024"
+    },
+    "ramp": {
+      "name": "Ramp",
+      "weight": 7.11,
+      "sector": "Fintech",
+      "cik": null,
+      "newsQuery": "Ramp fintech valuation OR funding round",
+      "cbInsightsName": "Ramp",
+      "positions": [
+        { "security": "Series E-3 Preferred", "costBasis": 14613750, "fairValue": 14613750, "acquisitionDate": "2025-11-21" },
+        { "security": "Class A Common", "costBasis": 10386180, "fairValue": 10386180, "acquisitionDate": "2025-11-25" }
+      ],
+      "totalFairValue": 24999930,
+      "valuationAtFiling": 13000000000,
+      "valuationAtFilingSource": "Series D 2023"
+    },
+    "openai": {
+      "name": "OpenAI",
+      "weight": 0,
+      "sector": "AI",
+      "cik": "0002041780",
+      "newsQuery": "OpenAI valuation OR funding round",
+      "cbInsightsName": "OpenAI",
+      "positions": [],
+      "totalFairValue": 0,
+      "valuationAtFiling": 157000000000,
+      "valuationAtFilingSource": "Oct 2024 round",
+      "note": "Allocation TBD - announced but not yet in schedule of investments"
+    },
+    "elevenlabs": {
+      "name": "ElevenLabs",
+      "weight": 0,
+      "sector": "AI",
+      "cik": "0002128938",
+      "newsQuery": "ElevenLabs valuation OR funding round",
+      "cbInsightsName": "ElevenLabs",
+      "positions": [],
+      "totalFairValue": 0,
+      "valuationAtFiling": 11000000000,
+      "valuationAtFilingSource": "Series C 2025",
+      "note": "Allocation TBD"
+    },
+    "stripe": {
+      "name": "Stripe",
+      "weight": 0,
+      "sector": "Fintech",
+      "cik": "0001873569",
+      "newsQuery": "Stripe valuation OR funding round OR tender offer",
+      "cbInsightsName": "Stripe",
+      "positions": [],
+      "totalFairValue": 0,
+      "valuationAtFiling": 65000000000,
+      "valuationAtFilingSource": "2024 tender offer",
+      "note": "Allocation TBD"
+    }
+  }
+}
