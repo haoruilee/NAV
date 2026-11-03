@@ -45,6 +45,8 @@ test('duplicate records are idempotent and amount extraction understands scaled 
  assert.equal(evidenceValueMatches('A valuation of $1.25 billion',1250000000),true);
  assert.equal(evidenceValueMatches('A valuation of $1,250,000,000',1250000000),true);
  assert.equal(evidenceValueMatches('Raised $100 million',1250000000),false);
+ assert.equal(evidenceValueMatches('OpenAI raised $1 billion at a $20 billion valuation',1000000000),false);
+ assert.equal(evidenceValueMatches('OpenAI raised $1 billion at a $20 billion valuation',20000000000),true);
 });
 test('context bounds history and preserves complete primary evidence contract',()=>{
  const audits=[{fundId:'rvi',companies:{openai:{name:'OpenAI',entries:Array.from({length:100},(_,i)=>({value:i,date:'2026-01-01',source:'news',label:'record',audit:{useForNav:false,issues:[]}}))}}}];

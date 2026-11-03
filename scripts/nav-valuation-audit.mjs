@@ -524,7 +524,7 @@ export function trustedEvidenceHost(url,key) {
 }
 export function evidenceValueMatches(quote,value) {
   const tokens=[...quote.replaceAll(',','').matchAll(/(?:US\$|USD|\$)\s*([0-9]+(?:\.[0-9]+)?)\s*(trillion|billion|million|tn|bn|[TBM])?/gi)];
-  return tokens.some(m=>{const unit=(m[2]||'').toLowerCase();const scale={trillion:1e12,tn:1e12,t:1e12,billion:1e9,bn:1e9,b:1e9,million:1e6,m:1e6}[unit]||1;return Math.abs(Number(m[1])*scale-value)<=Math.max(1,value*0.001);});
+  return tokens.some(m=>{const before=quote.replaceAll(',','').slice(Math.max(0,m.index-70),m.index);const after=quote.replaceAll(',','').slice(m.index+m[0].length,m.index+m[0].length+50);if(!/(?:valued|valuation|company value)[^$0-9]{0,55}$/i.test(before) && !/^[\s-]*(?:(?:post-money|pre-money|standalone|company)\s+)?valuation\b/i.test(after))return false;const unit=(m[2]||'').toLowerCase();const scale={trillion:1e12,tn:1e12,t:1e12,billion:1e9,bn:1e9,b:1e9,million:1e6,m:1e6}[unit]||1;return Math.abs(Number(m[1])*scale-value)<=Math.max(1,value*0.001);});
 }
 export async function verifyPrimaryEvidence(decision,company,fetcher=fetch) {
   const v=decision.newValuation;
