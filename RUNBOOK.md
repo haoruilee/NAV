@@ -9,6 +9,7 @@
 - New numerical records require confidence >=0.85, a direct primary domain URL, an exact source quote naming the company and matching the USD amount, and a successful independent harness re-fetch. Unsupported records are rejected or skipped; existing figures remain unchanged. No update is required on a day without verified news.
 - Data files are written atomically with per-run backups, only for affected funds. `lastUpdated` changes only when new data is inserted. Failed review and dry runs never refresh data or verification timestamps.
 - Public `/api/agent-runs` and company source pages retain the compatible green `ready` status only after validation/apply completes. Lifecycle events state the actual decision and insertion counts; `outcome` distinguishes an update from no change/cache hits. Agent-proposed `ready` alone is never success.
+- Official NAV refresh scans up to three relevant SEC filings across the recent filing list, rather than only the first ten mixed documents. It accepts only explicit dated NAV-per-share sentences, never market prices/hypotheticals/future dates/conflicting disclosures. Filings are cached by accession/document; records are deduplicated by disclosure date, with atomic writes and backups.
 - Coverage: configured portfolio companies in RVI/USVC; other listed funds without company configuration are explicitly recorded as unconfigured, never fabricated.
 - All code tests run on the designated builder `li@www.xzhtai.cn:2077` using synthetic fixtures, no production data or credentials. This host-script change needs no frontend or Docker build.
 
@@ -61,20 +62,20 @@ systemctl list-timers nav-valuation-audit.timer
 journalctl -u nav-valuation-audit.service -n 100
 ```
 
-The harness requires Claude Code CLI login state on the host. Claude runs inside the `nav-valuation-claude` tmux session; tmux only provides a persistent TTY. Claude must write exactly one JSON object to the run-specific outbox path. The harness validates run id, intent, ready state, risk level, environment understanding, known fund/company ids, confidence, evidence URLs, and valuation schema before applying updates.
+The harness requires the private project-scoped Claude Code provider settings; it does not depend on an interactive OAuth login. Claude runs inside the `nav-valuation-claude` tmux session; tmux only provides a persistent TTY. Claude must write exactly one JSON object to the run-specific outbox path. The harness validates run id, intent, ready state, risk level, environment understanding, known fund/company ids, confidence, evidence URLs, and valuation schema before applying updates.
 
 Restart the Claude Code valuation review manually:
 
 ```bash
 cd /home/claudeuser/nav-monitor
-tmux kill-session -t nav-valuation-claude 2>/dev/null || true
-npm run audit:valuations -- --max-budget-usd=8 --timeout-ms=1800000
+sudo systemctl start nav-valuation-audit.service
 ```
 
 Inspect the live agent screen:
 
 ```bash
-tmux attach -t nav-valuation-claude
+sudo -u claudeuser tmux ls
+# Attach to the unique nav-valuation-<runId> session listed above.
 ```
 
 Detach from tmux without stopping it: press `Ctrl-b`, then `d`.

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync } from 'fs';
 import { createHash } from 'crypto';
+import { refreshOfficialNav } from './official-nav-refresh.mjs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { spawnSync } from 'child_process';
@@ -430,6 +431,12 @@ async function main() {
   event(run, 'deterministic_audit_completed', 'Local valuation audit rules applied.', { funds: funds.map(f => f.id) });
   writeJSON(latestAuditPath, { runId, generatedAt: new Date().toISOString(), audits });
 
+  if (!hasFlag('--local-only') && !hasFlag('--no-apply')) {
+    event(run,'official_nav_started','Checking dated per-share NAV disclosures in recent relevant SEC filings.');writeJSON(runPath,run);
+    const officialNav=await refreshOfficialNav(repoRoot,funds,runId);
+    event(run,'official_nav_completed',`Official NAV refresh added ${officialNav.reduce((n,f)=>n+f.added,0)} dated records.`,{funds:officialNav});writeJSON(runPath,run);
+  }
+
   event(run, 'candidate_collection_started', 'Collecting read-only news candidates for Claude Code decisioning.');
   const allCandidates = hasFlag('--local-only') ? [] : await collectNewsCandidates(funds);
   const checkpointPath=join(harnessRoot,'state','evidence-checkpoint.json');
@@ -496,6 +503,7 @@ async function main() {
 
   run.outcome = validation.data.ready ? (hasFlag('--no-apply') ? 'dry_run' : (applyResult.applied.length ? 'updated' : 'completed_no_change')) : 'blocked';
   run.status = validation.data.ready ? (hasFlag('--no-apply') ? 'dry_run' : 'ready') : 'blocked';
+  if (!validation.data.ready) process.exitCode=1;
   event(run, 'outbox_validated', 'Agent outbox passed schema checks.', {
     ready: validation.data.ready,
     riskLevel: validation.data.riskLevel,
