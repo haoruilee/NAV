@@ -176,7 +176,7 @@ export function buildContext({ runId, outboxPath, audits, candidates }) {
     '',
     'Read-only news candidates collected by the harness:',
     '```json',
-    JSON.stringify(candidates, null, 2),
+    JSON.stringify(candidates.map(c=>({...c,items:(c.items||[]).map(i=>({...i,url:/^https?:\/\/news\.google\.com\//.test(i.url)?undefined:i.url}))})), null, 2),
     '```',
     '',
     'Compact current record snapshot (not proof of current value):',
@@ -372,7 +372,7 @@ function dispatchClaudeTmux(contextPath, runId) {
   if (!existsSync(settings)) return {ok:false,error:'project_claude_settings_missing'};
   const prompt = `Read ${contextPath}. Follow its complete contract and write only the required outbox. Do not edit product data or code. Do not wait for a human. Stop after writing the outbox.`;
   const args = ['claude','-p',prompt,'--output-format','json','--effort','low','--disable-slash-commands','--no-session-persistence','--permission-mode','dontAsk','--tools','Read,Write,WebSearch,WebFetch','--allowedTools','Read,Write,WebSearch,WebFetch','--settings',settings,'--max-budget-usd',argValue('--max-budget-usd','8')];
-  const command = `exec ${args.map(quoteShell).join(' ')} > ${quoteShell(join(harnessRoot,'runs',`${runId}.cli.json`))} 2> ${quoteShell(join(harnessRoot,'runs',`${runId}.stderr.log`))}`;
+  const command = `exec ${args.map(quoteShell).join(' ')} > ${quoteShell(join(harnessRoot,'runs',`${runId}.stdout.json`))} 2> ${quoteShell(join(harnessRoot,'runs',`${runId}.stderr.log`))}`;
   const start=tmux(['new-session','-d','-s',sessionName,'-c',join(harnessRoot,'context'),command]);
   return start.status===0 ? {ok:true,sessionName} : {ok:false,sessionName,error:'tmux_start_failed'};
 }
