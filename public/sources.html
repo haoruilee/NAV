@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valuation Sources | NAV Monitor</title>
+  <link rel="stylesheet" href="/assets/nav-apple.e301a03db123.css">
+<link rel="icon" href="/assets/nav-icon.svg" type="image/svg+xml">
+</head>
+<body class="text-txt min-h-screen">
+  <header class="site-bar"><div class="site-bar-inner"><a class="site-brand" href="/" aria-label="NAV Monitor home"><span class="brand-icon" id="nav-logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18V6m0 12h16M7 14l4-5 4 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="nav-logo-letter" hidden>R</span></span><span id="nav-title">NAV Monitor</span><span id="nav-subtitle" class="sr-only">Fund value tracker</span></a><a class="method-button" id="back-overview" href="/">Back to overview</a></div></header><main class="source-main">
+    <div class="source-breadcrumb"><span id="fund-label">Fund</span><span aria-hidden="true">/</span><span>Valuation sources</span></div>
+    <header class="source-heading"><h1 id="company-title">Loading sources…</h1><h2>The evidence behind the estimate.</h2><p id="summary">Source records inform the estimate. Review the underlying evidence and audit decisions.</p><div id="updated" class="source-updated"></div></header>
+    <section class="source-panel">
+      <div class="table-scroll" role="region" aria-label="Valuation source records" tabindex="0">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-[11px] text-txt-faint uppercase tracking-wider border-b border-border">
+              <th class="text-left px-4 py-3 font-medium">Date</th>
+              <th class="text-right px-4 py-3 font-medium">Value</th>
+              <th class="text-left px-4 py-3 font-medium">Source</th>
+              <th class="text-left px-4 py-3 font-medium">Trust</th>
+              <th class="text-left px-4 py-3 font-medium">Checked</th>
+              <th class="text-left px-4 py-3 font-medium">NAV Use</th>
+              <th class="text-left px-4 py-3 font-medium">Record</th>
+            </tr>
+          </thead>
+          <tbody id="rows" class="divide-y divide-border">
+            <tr><td colspan="7" class="px-4 py-8 text-center text-txt-faint">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="activity-panel"><div class="activity-heading"><h2>Update activity</h2><span id="runs-count"></span></div><div id="runs"><p class="text-txt-muted py-5">Loading update activity…</p></div></section><p class="source-footnote">Source records inform estimates. Official NAV is reported separately.</p>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const fund = params.get('fund') || 'rvi';
+    const company = params.get('company');
+
+    const fmtCap = n => {
+      if (n == null) return '--';
+      if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
+      if (n >= 1e9) return '$' + (n / 1e9).toFixed(2) + 'B';
+      if (n >= 1e6) return '$' + (n / 1e6).toFixed(0) + 'M';
+      return '$' + n.toLocaleString();
+    };
+
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[ch]));
+    }
+
+    function sourceLabel(v) {
+      if (v.audit?.publisher) return v.audit.publisher;
+      return ({ cbinsights: 'CB Insights', news: 'News', formD: 'SEC Form D', efts: 'SEC EFTS' }[v.source] || v.source || '--');
+    }
+
+    function trustTag(audit) {
+      const level = audit?.trustLevel || 'low';
+      const cls = level === 'high' ? 'bg-green/10 text-green border border-green/20' :
+        level === 'medium' ? 'bg-yellow-400/10 text-yellow-400 border border-yellow-400/20' :
+        'bg-red/10 text-red border border-red/20';
+      return `<span class="tag ${cls}">${esc(level)}</span>`;
+    }
+
+    function navUseTag(audit) {
+      if (audit?.useForNav) return '<span class="tag bg-green/10 text-green border border-green/20">Used</span>';
+      return '<span class="tag bg-red/10 text-red border border-red/20">Blocked</span>';
+    }
+
+    async function main() {
+      const [res, runsRes] = await Promise.all([
+        fetch(`/api/valuations?fund=${encodeURIComponent(fund)}`),
+        fetch('/api/agent-runs?limit=8')
+      ]);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const runsData = runsRes.ok ? await runsRes.json() : { runs: [] };
+      const record = data.companies?.[company];
+
+      document.getElementById('updated').textContent = data.lastUpdated ? `Updated ${new Date(data.lastUpdated).toLocaleString()}` : '--';
+      document.getElementById('fund-label').textContent = fund.toUpperCase();
+      document.getElementById('back-overview').href = '/#' + encodeURIComponent(fund);
+
+      if (!record) {
+        document.getElementById('company-title').textContent = 'Company not found';
+        document.getElementById('rows').innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-txt-faint">No valuation records.</td></tr>';
+        return;
+      }
+
+      document.title = `${record.name} Valuation Sources | NAV Monitor`;
+      document.getElementById('company-title').textContent = record.name;
+
+      const rows = record.valuationHistory || [];
+      const action = record.corporateAction;
+      document.getElementById('summary').textContent = action ?
+        `${rows.length} recent valuation records. Corporate action: ${action.label}` :
+        `${rows.length} recent valuation records. Official or cross-verified records may be used for estimated NAV; blocked records remain visible for audit.`;
+
+      document.getElementById('rows').innerHTML = rows.length ? rows.map(v => {
+        const audit = v.audit || {};
+        const title = v.label || v.headline || sourceLabel(v);
+        const issues = audit.issues?.length ? `<div class="text-[11px] text-red mt-1">${audit.issues.map(esc).join(', ')}</div>` : '';
+        const href = v.url ? esc(v.url) : null;
+        const link = href ? `<a class="text-green hover:underline" href="${href}" target="_blank" rel="noopener noreferrer">${esc(title)}</a>` : esc(title);
+        const verified = audit.checkedAt ? new Date(audit.checkedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '--';
+        return `<tr>
+          <td class="px-4 py-3 font-mono text-txt-muted whitespace-nowrap">${esc(v.date || '--')}</td>
+          <td class="px-4 py-3 font-mono text-right text-white">${fmtCap(v.value)}</td>
+          <td class="px-4 py-3">${esc(sourceLabel(v))}<div class="text-[11px] text-txt-faint">${esc(audit.sourceClass || '')}</div></td>
+          <td class="px-4 py-3">${trustTag(audit)}</td>
+          <td class="px-4 py-3 font-mono text-[11px] text-txt-muted whitespace-nowrap">${esc(verified)}</td>
+          <td class="px-4 py-3">${navUseTag(audit)}</td>
+          <td class="px-4 py-3 max-w-xl">${link}${issues}</td>
+        </tr>`;
+      }).join('') : '<tr><td colspan="7" class="px-4 py-8 text-center text-txt-faint">No valuation records.</td></tr>';
+
+      const runs = runsData.runs || [];
+      document.getElementById('runs-count').textContent = `${runs.length} runs`;
+      document.getElementById('runs').innerHTML = runs.length ? runs.map(run => {
+        const events=run.events||[],last=events.at(-1)||{};
+        const titles={daily_maintenance:'Daily maintenance',nav_valuation_audit:'Valuation review',official_nav_refresh:'Official NAV refresh'};
+        const success=['ready','updated','completed_no_change','no_new_evidence','local_audit_completed'].includes(run.status);
+        const running=run.status==='running';
+        const label=running?'In progress':success?'Completed':'Needs attention';
+        const tone=running?'status-running':success?'text-green':'text-red';
+        const message=running?'Checking source evidence and reviewing valuation records.':success?(last.metadata?.outcome==='completed_no_change'?'Review completed. Existing valuation records were retained.':last.message||'Source review completed.'):'This review stopped before completion. Details are available below.';
+        const time=last.at?new Date(last.at).toLocaleString():'';
+        return `<article class="activity-entry"><h3>${esc(titles[run.intent]||'Source review')}</h3><div class="activity-meta"><time>${esc(time)}</time><span class="${tone}">${label}</span></div><p>${esc(message)}</p><details><summary>Activity details</summary><div class="activity-details"><div class="font-mono">${esc(run.runId)}</div>${events.slice(-6).map(event=>`<div><span>${esc(event.at||'')}</span> · ${esc(event.message||'')}</div>`).join('')}</div></details></article>`;
+      }).join('') : '<div class="py-6 text-txt-muted">No recent update activity.</div>';
+
+    }
+
+    main().catch(err => {
+      document.getElementById('company-title').textContent = 'Failed to load';
+      document.getElementById('rows').innerHTML = `<tr><td colspan="7" class="px-4 py-8 text-center text-red">${esc(err.message)}</td></tr>`;
+    });
+  </script>
+</body>
+</html>

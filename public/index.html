@@ -3,201 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RVI NAV Monitor</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lightweight-charts@4.1.1/dist/lightweight-charts.standalone.production.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'system-ui', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            bg: { DEFAULT: '#06080d', card: '#0c1018', elevated: '#121821' },
-            border: { DEFAULT: '#1a2233', light: '#243044' },
-            green: { DEFAULT: '#00e676', dim: '#00e67622', dark: '#00e67608' },
-            red: { DEFAULT: '#ff5252', dim: '#ff525222' },
-            txt: { DEFAULT: '#e2e8f0', muted: '#64748b', faint: '#475569' },
-          }
-        }
-      }
-    }
+  <title>NAV Monitor — Track Closed-End Fund NAV, Premiums & Holdings Valuations</title>
+  <meta name="description" content="Real-time NAV tracker for closed-end venture capital funds. Monitor net asset value, market premium/discount, portfolio holdings, and estimated valuations from SEC EDGAR filings.">
+  <meta name="keywords" content="NAV monitor, closed-end fund, net asset value, fund premium discount, venture capital fund tracker, SEC EDGAR, holdings valuation">
+  <link rel="canonical" href="https://etfnav.org/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NAV Monitor — Closed-End Fund NAV & Premium Tracker">
+  <meta property="og:description" content="Track net asset value, market premiums/discounts, and portfolio holdings valuations for closed-end venture capital funds. Data sourced from SEC EDGAR, CB Insights, and Yahoo Finance.">
+  <meta property="og:url" content="https://etfnav.org/">
+  <meta property="og:site_name" content="NAV Monitor">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NAV Monitor — Closed-End Fund NAV & Premium Tracker">
+  <meta name="twitter:description" content="Real-time NAV tracker for closed-end venture capital funds. Monitor premiums, holdings, and estimated valuations.">
+
+  <!-- Structured Data: WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "NAV Monitor",
+    "description": "Real-time NAV tracker for closed-end venture capital funds. Monitor net asset value, market premium/discount, portfolio holdings, and estimated valuations.",
+    "url": "https://etfnav.org/",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Real-time market price tracking",
+      "NAV premium/discount calculation",
+      "Portfolio holdings breakdown",
+      "Estimated NAV from multiple data sources",
+      "SEC EDGAR filing integration",
+      "Historical NAV charting"
+    ]
+  }
   </script>
-  <style>
-    * { box-sizing: border-box; }
-    body { background: #06080d; font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 
-    /* Glow effects */
-    .glow-green { box-shadow: 0 0 20px #00e67611, 0 0 60px #00e67608; }
-    .glow-red { box-shadow: 0 0 20px #ff525211, 0 0 60px #ff525208; }
-    .glow-card { box-shadow: 0 1px 3px rgba(0,0,0,.4), 0 8px 32px rgba(0,0,0,.3); }
+  <!-- Structured Data: FinancialProduct -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FinancialProduct",
+    "name": "Robinhood Ventures Fund I (RVI)",
+    "description": "Closed-end fund investing in late-stage private technology companies",
+    "category": "Closed-End Fund",
+    "provider": {
+      "@type": "Organization",
+      "name": "Robinhood Asset Management"
+    }
+  }
+  </script>
 
-    /* Glassmorphism cards */
-    .glass {
-      background: linear-gradient(135deg, rgba(12,16,24,.9) 0%, rgba(18,24,33,.85) 100%);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(26,34,51,.6);
-    }
-    .glass:hover { border-color: rgba(36,48,68,.8); }
-
-    /* Animated gradient border on hero card */
-    .hero-card {
-      position: relative;
-      background: #0c1018;
-      overflow: hidden;
-    }
-    .hero-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      padding: 1px;
-      border-radius: inherit;
-      background: linear-gradient(135deg, #00e67633, transparent 40%, transparent 60%, #00e67615);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-    }
-
-    /* Price ticker animation */
-    .price-up { animation: flashGreen .6s ease; }
-    .price-down { animation: flashRed .6s ease; }
-    @keyframes flashGreen {
-      0% { background: #00e67622; } 100% { background: transparent; }
-    }
-    @keyframes flashRed {
-      0% { background: #ff525222; } 100% { background: transparent; }
-    }
-
-    /* Pulse */
-    .pulse { animation: pulse 2.5s cubic-bezier(.4,0,.6,1) infinite; }
-    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
-
-    /* Skeleton loading */
-    .skeleton {
-      background: linear-gradient(90deg, #121821 25%, #1a2233 50%, #121821 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.8s ease infinite;
-      border-radius: 6px;
-    }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #1a2233; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #243044; }
-
-    /* Input styling */
-    .input-field {
-      background: #0c1018;
-      border: 1px solid #1a2233;
-      color: #e2e8f0;
-      transition: all .2s;
-    }
-    .input-field:focus {
-      outline: none;
-      border-color: #00e676;
-      box-shadow: 0 0 0 3px #00e67615, 0 0 20px #00e67610;
-    }
-    .input-field::placeholder { color: #475569; }
-
-    /* Button */
-    .btn-primary {
-      background: linear-gradient(135deg, #00e676, #00c853);
-      color: #06080d;
-      font-weight: 600;
-      transition: all .2s;
-    }
-    .btn-primary:hover {
-      box-shadow: 0 0 20px #00e67633;
-      transform: translateY(-1px);
-    }
-    .btn-primary:active { transform: translateY(0); }
-
-    /* Period button */
-    .period-btn {
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 500;
-      border-radius: 8px;
-      color: #64748b;
-      background: transparent;
-      border: 1px solid transparent;
-      transition: all .2s;
-      cursor: pointer;
-    }
-    .period-btn:hover { color: #e2e8f0; background: #121821; }
-    .period-btn.active {
-      color: #00e676;
-      background: #00e67612;
-      border-color: #00e67633;
-    }
-
-    /* Premium gauge */
-    .gauge-track {
-      height: 6px;
-      background: linear-gradient(90deg, #00e676 0%, #1a2233 33%, #1a2233 66%, #ff5252 100%);
-      border-radius: 3px;
-      opacity: .25;
-    }
-
-    /* Stat row hover */
-    .stat-row { transition: background .15s; }
-    .stat-row:hover { background: #0c101808; }
-
-    /* Tag */
-    .tag {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: .03em;
-      padding: 3px 10px;
-      border-radius: 6px;
-      text-transform: uppercase;
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/nav-apple.e301a03db123.css">
+<script src="/assets/lightweight-charts.c6b1f1cad0ab.js"></script>
+<script src="/assets/chart.87364cc2b2a7.js"></script>
+<link rel="icon" href="/assets/nav-icon.svg" type="image/svg+xml">
 </head>
 <body class="text-txt min-h-screen">
 
-  <!-- Top bar -->
-  <nav class="sticky top-0 z-50 border-b border-border bg-bg/80 backdrop-blur-xl">
-    <div class="max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green to-emerald-600 flex items-center justify-center">
-          <span class="text-black font-bold text-sm">R</span>
-        </div>
-        <div>
-          <span class="font-semibold text-white text-[15px] tracking-tight">RVI Monitor</span>
-          <span class="text-txt-faint text-xs ml-2 hidden sm:inline">Robinhood Ventures Fund I</span>
-        </div>
-      </div>
-      <div class="flex items-center gap-5">
-        <div class="flex items-center gap-2">
-          <div class="w-[6px] h-[6px] rounded-full pulse" id="status-dot" style="background:#64748b"></div>
-          <span class="text-xs text-txt-muted font-medium font-mono" id="status-text">--</span>
-        </div>
-        <div class="text-[11px] text-txt-faint font-mono" id="last-updated"></div>
-      </div>
-    </div>
-  </nav>
-
-  <main class="max-w-[1400px] mx-auto px-6 py-6 space-y-5">
+<header class="site-bar"><div class="site-bar-inner"><a class="site-brand" href="/" aria-label="NAV Monitor home"><span class="brand-icon" id="nav-logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18V6m0 12h16M7 14l4-5 4 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="nav-logo-letter" hidden>R</span></span><span id="nav-title">NAV Monitor</span><span id="nav-subtitle" class="sr-only">Fund value tracker</span></a><button type="button" class="method-button" id="help-open" aria-label="About ETF NAV tracking">Methodology</button></div></header>
+<nav class="fund-navigation" aria-label="Fund navigation"><div id="fund-tabs" role="tablist" aria-label="Select fund"></div></nav>
+  <main class="dashboard">
+    <section class="page-intro"><h1>Fund value. In perspective.</h1><p>Official NAV, market price, and the evidence behind them.</p><div class="market-status"><span id="status-dot" class="w-1.5 h-1.5 rounded-full" style="background:#76767b"></span><span id="status-text">Checking market status</span><span id="last-updated"></span></div></section>
 
     <!-- Row 1: Price Hero + NAV Card -->
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5" id="row-hero">
 
-      <!-- Price Hero (3 cols) -->
-      <div class="lg:col-span-3 hero-card rounded-2xl p-6 glow-card">
+      <!-- Price Hero (3 cols) — market-traded funds only -->
+      <div class="lg:col-span-3 hero-card rounded-2xl p-6 glow-card section-market-only" id="price-hero-card">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-2.5">
-            <span class="tag bg-border text-txt-muted">NYSE</span>
-            <span class="text-white font-semibold text-lg">$RVI</span>
+            <span class="tag bg-border text-txt-muted" id="price-exchange-tag">NYSE</span>
+            <span class="text-white font-semibold text-lg" id="price-symbol">$RVI</span>
           </div>
           <span class="text-[11px] text-txt-faint font-mono" id="price-exchange">Robinhood Ventures Fund I</span>
         </div>
@@ -254,10 +139,10 @@
         </div>
       </div>
 
-      <!-- NAV & Premium Card (2 cols) -->
-      <div class="lg:col-span-2 glass rounded-2xl p-6 glow-card flex flex-col">
+      <!-- NAV & Premium Card (2 cols, expands to full when no price) -->
+      <div class="lg:col-span-2 glass rounded-2xl p-6 glow-card flex flex-col" id="nav-card">
         <div class="flex items-center justify-between mb-5">
-          <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">NAV & Premium</span>
+          <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider" id="nav-card-header">NAV & Premium</span>
           <span class="text-[11px] text-txt-faint font-mono" id="nav-date">--</span>
         </div>
 
@@ -267,7 +152,7 @@
             <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-1.5">Official NAV</div>
             <span id="nav-value" class="text-3xl font-bold font-mono text-white">--</span>
           </div>
-          <div class="flex-1">
+          <div class="flex-1 section-market-only" id="premium-display">
             <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-1.5">Premium</div>
             <span id="premium-value" class="text-3xl font-bold font-mono">--</span>
           </div>
@@ -288,12 +173,12 @@
           </div>
           <div class="flex items-center justify-between mt-2">
             <span class="text-[10px] text-txt-faint" id="est-nav-detail">Based on latest company valuations</span>
-            <span class="text-[10px] font-mono" id="est-premium-value" style="color:#64748b">--</span>
+            <span class="text-[10px] font-mono section-market-only" id="est-premium-value" style="color:#64748b">--</span>
           </div>
         </div>
 
-        <!-- Premium gauge -->
-        <div class="mb-2">
+        <!-- Premium gauge — market-traded only -->
+        <div class="mb-2 section-market-only" id="premium-gauge-section">
           <div class="relative h-1.5 rounded-full overflow-hidden">
             <div class="gauge-track absolute inset-0"></div>
             <div id="premium-bar" class="absolute h-full rounded-full transition-all duration-700 ease-out" style="width:0; left:33.3%"></div>
@@ -314,16 +199,16 @@
             <span class="text-[11px] text-txt-faint uppercase tracking-wider">Source</span>
             <span class="tag bg-green/10 text-green border border-green/20" id="nav-source">SEC EDGAR</span>
           </div>
-          <div class="text-[11px] text-txt-faint mt-2">Official NAV quarterly (SEC). Estimated NAV from 5 data sources, refreshed every 6h.</div>
+          <div class="text-[11px] text-txt-faint mt-2">Official NAV from SEC filings. Company valuations checked daily.</div>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Price Chart -->
-    <div class="glass rounded-2xl glow-card overflow-hidden">
+    <!-- Row 2: Price Chart — market-traded only -->
+    <div class="glass rounded-2xl glow-card overflow-hidden section-market-only" id="price-chart-section">
       <div class="flex items-center justify-between px-6 pt-5 pb-3">
-        <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">Price Chart</span>
-        <div class="flex gap-1" id="period-selector">
+        <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider m-0">Price history</h2>
+        <div class="period-control" id="period-selector">
           <button data-period="1m" class="period-btn">1M</button>
           <button data-period="3m" class="period-btn active">3M</button>
           <button data-period="6m" class="period-btn">6M</button>
@@ -338,7 +223,7 @@
     <div class="glass rounded-2xl p-6 glow-card">
       <div class="flex items-center justify-between mb-5">
         <div class="flex items-center gap-3">
-          <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">Holdings Valuation Tracker</span>
+          <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider m-0">Holdings valuations</h2>
           <span class="tag bg-green/10 text-green border border-green/20" id="val-source-count">--</span>
         </div>
         <span class="text-[11px] text-txt-faint font-mono" id="val-last-updated">--</span>
@@ -353,7 +238,7 @@
               <th class="text-right px-2 pb-3 font-medium">Latest Val.</th>
               <th class="text-right px-2 pb-3 font-medium">Change</th>
               <th class="text-left px-2 pb-3 font-medium">Source</th>
-              <th class="text-right px-2 pb-3 font-medium">Data Age</th>
+              <th class="text-right px-2 pb-3 font-medium">Verified</th>
             </tr>
           </thead>
           <tbody id="val-table-body" class="divide-y divide-border">
@@ -363,9 +248,9 @@
       </div>
       <div class="mt-4 pt-4 border-t border-border flex items-center justify-between">
         <div class="flex items-center gap-4 text-[10px]">
-          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green"></span> &lt; 30 days</span>
-          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> 30-90 days</span>
-          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red"></span> &gt; 90 days</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green"></span> Verified &lt; 7d</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-yellow-400"></span> 7-30d</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red"></span> &gt; 30d</span>
           <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-txt-faint"></span> No data</span>
         </div>
         <div class="text-[10px] text-txt-faint" id="val-sources-detail">Sources: SEC EDGAR, CB Insights, Google News</div>
@@ -373,12 +258,27 @@
     </div>
 
     <!-- Row 4: Holdings + Fund Details -->
+    <div class="glass rounded-2xl p-6 glow-card">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider m-0">Estimated NAV timeline</h2>
+        <span class="text-[11px] text-txt-faint">Click a point to inspect valuation evidence</span>
+      </div>
+      <div style="height: 260px;" id="estimated-nav-chart-wrap">
+        <canvas id="estimated-nav-chart"></canvas>
+      </div>
+      <div id="no-estimated-history" class="text-center py-10 hidden">
+        <div class="text-txt-faint text-sm mb-1">No estimated NAV history yet</div>
+        <div class="text-txt-faint text-xs">Verified valuation events will appear here as new evidence becomes available.</div>
+      </div>
+    </div>
+
+    <!-- Row 5: Holdings + Fund Details -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
 
       <!-- Holdings (3 cols) -->
       <div class="lg:col-span-3 glass rounded-2xl p-6 glow-card">
         <div class="flex items-center justify-between mb-5">
-          <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">Portfolio Holdings</span>
+          <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider m-0">Portfolio holdings</h2>
           <span class="text-[11px] text-txt-faint font-mono" id="holdings-date">--</span>
         </div>
 
@@ -402,35 +302,47 @@
 
       <!-- Fund Details (2 cols) -->
       <div class="lg:col-span-2 glass rounded-2xl p-6 glow-card">
-        <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider block mb-5">Fund Details</span>
-        <div class="space-y-0">
+        <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider block mb-5 m-0">Fund details</h2>
+        <div class="space-y-0" id="fund-details-body">
           <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
             <span class="text-sm text-txt-muted">Type</span>
-            <span class="text-sm text-txt font-medium">Closed-End Fund</span>
+            <span class="text-sm text-txt font-medium" id="detail-type">--</span>
           </div>
-          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg section-market-only" id="detail-exchange-row">
             <span class="text-sm text-txt-muted">Exchange</span>
-            <span class="text-sm text-txt font-medium font-mono">NYSE</span>
+            <span class="text-sm text-txt font-medium font-mono" id="detail-exchange">--</span>
           </div>
           <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
-            <span class="text-sm text-txt-muted">Inception</span>
-            <span class="text-sm text-txt font-medium font-mono">2026-03-06</span>
+            <span class="text-sm text-txt-muted">SEC CIK</span>
+            <span class="text-sm text-txt font-medium font-mono" id="detail-cik">--</span>
           </div>
-          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-expense-gross-row">
             <span class="text-sm text-txt-muted">Expense Ratio (Gross)</span>
             <span class="text-sm text-txt font-medium font-mono" id="expense-gross">--</span>
           </div>
-          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-expense-net-row">
             <span class="text-sm text-txt-muted">Expense Ratio (Net)</span>
             <span class="text-sm text-txt font-medium font-mono" id="expense-net">--</span>
           </div>
-          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-fee-waiver-row">
             <span class="text-sm text-txt-muted">Fee Waiver Until</span>
             <span class="text-sm text-txt font-medium font-mono" id="fee-waiver">--</span>
           </div>
           <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg">
             <span class="text-sm text-txt-muted">Category</span>
-            <span class="text-sm text-txt font-medium">Venture / Private Tech</span>
+            <span class="text-sm text-txt font-medium" id="detail-category">--</span>
+          </div>
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-net-assets-row" style="display:none">
+            <span class="text-sm text-txt-muted">Net Assets</span>
+            <span class="text-sm text-txt font-medium font-mono" id="detail-net-assets">--</span>
+          </div>
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-shares-row" style="display:none">
+            <span class="text-sm text-txt-muted">Shares Outstanding</span>
+            <span class="text-sm text-txt font-medium font-mono" id="detail-shares">--</span>
+          </div>
+          <div class="stat-row flex justify-between items-center py-2.5 px-2 -mx-2 rounded-lg" id="detail-cash-row" style="display:none">
+            <span class="text-sm text-txt-muted">Cash Position</span>
+            <span class="text-sm text-txt font-medium font-mono" id="detail-cash">--</span>
           </div>
         </div>
       </div>
@@ -439,7 +351,7 @@
     <!-- Row 4: NAV History -->
     <div class="glass rounded-2xl p-6 glow-card">
       <div class="flex items-center justify-between mb-4">
-        <span class="text-xs text-txt-muted font-semibold uppercase tracking-wider">NAV History</span>
+        <h2 class="text-xs text-txt-muted font-semibold uppercase tracking-wider m-0">NAV history</h2>
         <span class="text-[11px] text-txt-faint">Based on recorded entries</span>
       </div>
       <div style="height: 180px;" id="premium-chart-wrap">
@@ -447,24 +359,109 @@
       </div>
       <div id="no-premium-data" class="text-center py-10 hidden">
         <div class="text-txt-faint text-sm mb-1">No history yet</div>
-        <div class="text-txt-faint text-xs">Add NAV entries above to track premium/discount over time</div>
+        <div class="text-txt-faint text-xs">Historical filings will appear here when available.</div>
       </div>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="max-w-[1400px] mx-auto px-6 py-6">
+  <footer class="site-footer">
     <div class="flex items-center justify-between text-[11px] text-txt-faint">
-      <span>Data: Yahoo Finance &middot; SEC EDGAR &middot; CB Insights &middot; Google News &middot; Not financial advice</span>
+      <span>Data: SEC EDGAR &middot; CB Insights &middot; Google News &middot; Yahoo Finance &middot; Not financial advice</span>
       <span class="font-mono" id="footer-time"></span>
     </div>
   </footer>
 
+  <div class="modal-backdrop" id="help-modal" aria-hidden="true">
+    <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-border">
+        <div>
+          <h2 class="text-base font-semibold text-white m-0" id="help-title">ETF NAV & Tracking Method</h2>
+          <div class="text-[11px] text-txt-faint mt-1">How this site reads official NAV, market price, and private-company valuation evidence.</div>
+        </div>
+        <button type="button" class="help-close" id="help-close" aria-label="Close">×</button>
+      </div>
+      <div class="px-5 py-5 space-y-5 text-sm text-txt-muted leading-6">
+        <section>
+          <h3 class="text-xs text-txt-faint uppercase tracking-wider font-semibold mb-2">What NAV Means</h3>
+          <p>NAV, or net asset value, is the fund's assets minus liabilities divided by shares outstanding. For listed closed-end funds, market price can trade above or below official NAV. For interval funds, official NAV is usually updated through fund filings rather than live exchange trading.</p>
+        </section>
+        <section>
+          <h3 class="text-xs text-txt-faint uppercase tracking-wider font-semibold mb-2">What This Site Tracks</h3>
+          <p>The site separates official NAV from estimated NAV. Official NAV comes from fund filings and is treated as the baseline. Estimated NAV adjusts private holdings only when there is a usable valuation record for the portfolio company.</p>
+        </section>
+        <section>
+          <h3 class="text-xs text-txt-faint uppercase tracking-wider font-semibold mb-2">Valuation Method</h3>
+          <p>Each holding starts from the fund's reported fair value. When a verified company valuation changes from the filing baseline, the holding is scaled by that valuation ratio. Cash and other fund assets stay at reported value.</p>
+        </section>
+        <section>
+          <h3 class="text-xs text-txt-faint uppercase tracking-wider font-semibold mb-2">Source Discipline</h3>
+          <p>Claude Code reviews official company releases, SEC or regulatory filings, primary transaction announcements, and trusted media. Headlines about funding amount, revenue, talks, combined entities, or another company are automatically accepted or rejected before they can affect NAV.</p>
+        </section>
+        <section>
+          <h3 class="text-xs text-txt-faint uppercase tracking-wider font-semibold mb-2">Reading The Table</h3>
+          <p><span class="text-txt">Verified</span> means the last audit time, not the age of the valuation event. Click the Source badge for the underlying records, links, blocked items, and agent update log. This is not financial advice.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="nav-point-modal" aria-hidden="true">
+    <div class="help-modal" role="dialog" aria-modal="true" aria-labelledby="nav-point-title">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-border">
+        <div>
+          <h2 class="text-base font-semibold text-white m-0" id="nav-point-title">Estimated NAV Point</h2>
+          <div class="text-[11px] text-txt-faint mt-1" id="nav-point-subtitle">--</div>
+        </div>
+        <button type="button" class="help-close" id="nav-point-close" aria-label="Close">×</button>
+      </div>
+      <div class="px-5 py-5" id="nav-point-body"></div>
+    </div>
+  </div>
+
+  <!-- Crawlable content for search engines (noscript fallback) -->
+  <noscript>
+    <section class="max-w-[1400px] mx-auto px-6 py-8 text-gray-300">
+      <h1>NAV Monitor — Closed-End Fund NAV & Premium Tracker</h1>
+      <p>Track net asset value (NAV), market premiums and discounts, portfolio holdings, and estimated valuations for closed-end venture capital funds.</p>
+      <h2>Features</h2>
+      <ul>
+        <li>Real-time market price and NAV tracking</li>
+        <li>Premium/discount calculation and historical charting</li>
+        <li>Portfolio holdings breakdown with sector allocation</li>
+        <li>Multi-source estimated NAV from SEC filings, CB Insights, and news</li>
+        <li>52-week price range and volume data from Yahoo Finance</li>
+        <li>Automated SEC EDGAR filing integration for official NAV</li>
+      </ul>
+      <h2>Tracked Funds</h2>
+      <ul>
+        <li><strong>RVI</strong> — Robinhood Ventures Fund I (NYSE, Closed-End Fund)</li>
+        <li><strong>USVC</strong> — US Venture Capital Fund (Interval Fund)</li>
+      </ul>
+      <h2>Data Sources</h2>
+      <p>NAV Monitor aggregates data from SEC EDGAR quarterly filings, CB Insights unicorn valuations, Google News funding headlines, SEC Form D filings, and Yahoo Finance market data.</p>
+      <p>This application requires JavaScript to display real-time data.</p>
+    </section>
+  </noscript>
+
   <script>
+    Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif';
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) Chart.defaults.animation = false;
+    else Chart.defaults.animation.duration = 350;
     // ===== State =====
-    const state = { quote: null, navHistory: [], holdings: null, estimatedNAV: null, isMarketHours: false, currentPeriod: '3m' };
+    const state = {
+      currentFund: null,
+      funds: [],
+      quote: null,
+      navHistory: [],
+      estimatedHistory: [],
+      holdings: null,
+      estimatedNAV: null,
+      isMarketHours: false,
+      currentPeriod: '3m'
+    };
     let priceChart = null, lineSeries = null, volumeSeries = null;
-    let holdingsChartInstance = null, premiumChartInstance = null, refreshTimer = null;
+    let holdingsChartInstance = null, premiumChartInstance = null, estimatedNavChartInstance = null, refreshTimer = null;
     let lastPrice = null;
 
     // ===== Formatters =====
@@ -485,6 +482,46 @@
       return '$' + n.toLocaleString();
     };
 
+    // ===== Helpers =====
+    function getCurrentFundMeta() {
+      return state.funds.find(f => f.id === state.currentFund);
+    }
+
+    function isMarketFund() {
+      const f = getCurrentFundMeta();
+      return f && f.hasMarketPrice;
+    }
+
+    function apiUrl(path) {
+      const sep = path.includes('?') ? '&' : '?';
+      return `${path}${sep}fund=${state.currentFund}`;
+    }
+
+    function initHelpModal() {
+      const modal = document.getElementById('help-modal');
+      const openBtn = document.getElementById('help-open');
+      const closeBtn = document.getElementById('help-close');
+      if (!modal || !openBtn || !closeBtn) return;
+      const open = () => {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        closeBtn.focus();
+      };
+      const close = () => {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        openBtn.focus();
+      };
+      openBtn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', event => {
+        if (event.target === modal) close();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && modal.classList.contains('open')) close();
+      });
+    }
+
     // ===== API =====
     async function fetchJSON(url) {
       const r = await fetch(url);
@@ -492,10 +529,137 @@
       return r.json();
     }
 
+    // ===== Fund Switcher =====
+    function renderFundTabs() {
+      const container = document.getElementById('fund-tabs');
+      container.innerHTML = state.funds.map(f =>
+        `<button type="button" role="tab" aria-selected="${f.id === state.currentFund}" class="fund-tab ${f.id === state.currentFund ? 'active' : ''}" data-fund="${f.id}">${f.symbol || f.id.toUpperCase()}</button>`
+      ).join('');
+    }
+
+    function updateUIForFund() {
+      const fund = getCurrentFundMeta();
+      if (!fund) return;
+
+      const isMarket = fund.hasMarketPrice;
+      const label = fund.symbol || fund.id.toUpperCase();
+
+      // Update nav bar
+      document.getElementById('nav-logo-letter').textContent = label[0];
+      document.getElementById('nav-title').textContent = 'NAV Monitor';
+      document.getElementById('nav-subtitle').textContent = fund.name;
+      document.getElementById('price-symbol').textContent = fund.symbol ? `$${fund.symbol}` : label;
+      document.getElementById('price-exchange-tag').textContent = fund.exchange || fund.type;
+      document.getElementById('price-exchange').textContent = fund.name;
+      document.title = `${label} · NAV Monitor`;
+
+      // Toggle market-only sections
+      document.querySelectorAll('.section-market-only').forEach(el => {
+        if (isMarket) {
+          el.classList.remove('hidden-fund');
+          el.style.display = '';
+        } else {
+          el.classList.add('hidden-fund');
+        }
+      });
+
+      // NAV card: expand to full width when no price hero
+      const heroRow = document.getElementById('row-hero');
+      const navCard = document.getElementById('nav-card');
+      const priceHeroCard = document.getElementById('price-hero-card');
+
+      if (isMarket) {
+        heroRow.className = 'grid grid-cols-1 lg:grid-cols-5 gap-5';
+        navCard.className = 'lg:col-span-2 glass rounded-2xl p-6 glow-card flex flex-col';
+        priceHeroCard.style.display = '';
+      } else {
+        heroRow.className = 'grid grid-cols-1 gap-5';
+        navCard.className = 'glass rounded-2xl p-6 glow-card flex flex-col';
+        priceHeroCard.style.display = 'none';
+      }
+
+      // NAV card header text
+      document.getElementById('nav-card-header').textContent = isMarket ? 'NAV & Premium' : 'Net Asset Value';
+
+      // Status bar for non-market funds
+      if (!isMarket) {
+        document.getElementById('status-dot').style.background = '#6366f1';
+        document.getElementById('status-text').textContent = 'Interval Fund';
+      }
+
+      // Fund details
+      renderFundDetails(fund);
+    }
+
+    function renderFundDetails(fund) {
+      const isMarket = fund.hasMarketPrice;
+
+      const typeMap = {
+        'exchange-listed': 'Closed-End Fund (Listed)',
+        'public-venture-cef': 'Public Venture CEF',
+        'bdc': 'Listed Investment Company / BDC',
+        'private-holdings-etf': 'ETF with Private Holdings',
+        'interval-fund': 'Interval Fund'
+      };
+      document.getElementById('detail-type').textContent = typeMap[fund.type] || fund.type;
+      document.getElementById('detail-exchange').textContent = fund.exchange || 'N/A';
+      document.getElementById('detail-cik').textContent = fund.cik || 'N/A';
+      document.getElementById('detail-category').textContent = fund.category || 'Venture / Private Tech';
+
+      // Show/hide expense rows based on whether holdings data has them
+      // (they'll be populated by renderHoldings)
+
+      // For interval funds, show extra details
+      const isInterval = fund.type === 'interval-fund';
+      document.getElementById('detail-net-assets-row').style.display = isInterval ? '' : 'none';
+      document.getElementById('detail-shares-row').style.display = isInterval ? '' : 'none';
+      document.getElementById('detail-cash-row').style.display = isInterval ? '' : 'none';
+    }
+
+    async function switchFund(fundId) {
+      if (fundId === state.currentFund) return;
+
+      state.currentFund = fundId;
+      state.quote = null;
+      state.navHistory = [];
+      state.estimatedHistory = [];
+      state.holdings = null;
+      state.estimatedNAV = null;
+      lastPrice = null;
+
+      // Update URL hash
+      window.location.hash = fundId;
+
+      renderFundTabs();
+      updateUIForFund();
+
+      // Reset displays
+      document.getElementById('price').textContent = '--';
+      document.getElementById('price-change').textContent = '--';
+      document.getElementById('nav-value').textContent = '--';
+      document.getElementById('est-nav-value').textContent = '--';
+      document.getElementById('est-nav-change').textContent = '--';
+      document.getElementById('val-table-body').innerHTML = '<tr><td colspan="7" class="text-center py-8 text-txt-faint">Loading...</td></tr>';
+
+      // Re-fetch everything
+      const tasks = [loadNavHistory(), loadHoldings(), loadEstimatedNAV()];
+      if (isMarketFund()) {
+        tasks.push(refreshQuote(), refreshChart(state.currentPeriod), checkMarketStatus());
+      }
+      await Promise.all(tasks);
+      startAutoRefresh();
+    }
+
+    document.getElementById('fund-tabs').addEventListener('click', e => {
+      const btn = e.target.closest('.fund-tab');
+      if (btn?.dataset.fund) switchFund(btn.dataset.fund);
+    });
+
     // ===== Quote =====
     async function refreshQuote() {
+      if (!isMarketFund()) return;
       try {
-        state.quote = await fetchJSON('/api/quote');
+        state.quote = await fetchJSON(apiUrl('/api/quote'));
         renderPrice();
         renderPremiumDiscount();
         document.getElementById('last-updated').textContent = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -523,7 +687,7 @@
       const isUp = q.change >= 0;
       changeEl.innerHTML = `
         <span class="${isUp ? 'text-green' : 'text-red'}">${isUp ? '+' : ''}${q.change?.toFixed(2)}</span>
-        <span class="text-sm ${isUp ? 'text-green/60' : 'text-red/60'} ml-1">(${fmtPct(q.changePercent)})</span>
+        <span class="text-sm ${isUp ? 'text-green' : 'text-red'} ml-1">(${fmtPct(q.changePercent)})</span>
       `;
 
       document.getElementById('price-open').textContent = fmtUSD(q.open);
@@ -559,7 +723,7 @@
         srcEl.textContent = srcMap[latest.source] || latest.source;
       }
 
-      if (latest && q?.price) {
+      if (latest && q?.price && isMarketFund()) {
         const premium = ((q.price - latest.nav) / latest.nav) * 100;
         const premEl = document.getElementById('premium-value');
         premEl.textContent = fmtPct(premium);
@@ -571,18 +735,18 @@
         bar.style.width = Math.abs(barPct - 33.3) + '%';
         bar.style.left = Math.min(barPct, 33.3) + '%';
         bar.style.background = premium >= 0
-          ? 'linear-gradient(90deg, transparent, #ff5252)'
-          : 'linear-gradient(90deg, #00e676, transparent)';
+          ? 'linear-gradient(90deg, transparent, #c9342f)'
+          : 'linear-gradient(90deg, #248a3d, transparent)';
         bar.style.opacity = '0.5';
       }
 
-      // Re-render estimated premium when quote updates
+      // Re-render estimated NAV when quote updates
       renderEstimatedNAV();
     }
 
     async function loadNavHistory() {
       try {
-        state.navHistory = await fetchJSON('/api/nav');
+        state.navHistory = await fetchJSON(apiUrl('/api/nav'));
         renderPremiumDiscount();
         renderPremiumChart();
       } catch (e) { console.error('NAV failed:', e); }
@@ -592,12 +756,12 @@
     function initPriceChart() {
       const container = document.getElementById('price-chart');
       priceChart = LightweightCharts.createChart(container, {
-        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#64748b', fontSize: 11, fontFamily: 'JetBrains Mono' },
-        grid: { vertLines: { color: '#1a223311' }, horzLines: { color: '#1a223322' } },
+        layout: { background: { type: 'solid', color: 'transparent' }, textColor: '#64748b', fontSize: 11, fontFamily: 'ui-monospace' },
+        grid: { vertLines: { color: '#d2d2d733' }, horzLines: { color: '#d2d2d755' } },
         crosshair: {
           mode: LightweightCharts.CrosshairMode.Normal,
-          vertLine: { color: '#64748b33', width: 1, style: 2, labelBackgroundColor: '#121821' },
-          horzLine: { color: '#64748b33', width: 1, style: 2, labelBackgroundColor: '#121821' }
+          vertLine: { color: '#64748b33', width: 1, style: 2, labelBackgroundColor: '#1d1d1f' },
+          horzLine: { color: '#64748b33', width: 1, style: 2, labelBackgroundColor: '#1d1d1f' }
         },
         rightPriceScale: { borderVisible: false, scaleMargins: { top: 0.08, bottom: 0.15 } },
         timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false },
@@ -606,18 +770,18 @@
       });
 
       lineSeries = priceChart.addAreaSeries({
-        lineColor: '#00e676',
-        topColor: '#00e67618',
-        bottomColor: '#00e67602',
+        lineColor: '#0071e3',
+        topColor: '#0071e318',
+        bottomColor: '#0071e302',
         lineWidth: 2,
         crosshairMarkerVisible: true,
         crosshairMarkerRadius: 5,
-        crosshairMarkerBorderColor: '#00e676',
-        crosshairMarkerBackgroundColor: '#06080d'
+        crosshairMarkerBorderColor: '#248a3d',
+        crosshairMarkerBackgroundColor: '#ffffff'
       });
 
       volumeSeries = priceChart.addHistogramSeries({
-        color: '#00e67622',
+        color: '#248a3d22',
         priceFormat: { type: 'volume' },
         priceScaleId: 'vol'
       });
@@ -629,9 +793,10 @@
     }
 
     async function refreshChart(period) {
+      if (!isMarketFund()) return;
       try {
         state.currentPeriod = period;
-        const data = await fetchJSON(`/api/chart?period=${period}`);
+        const data = await fetchJSON(apiUrl(`/api/chart?period=${period}`));
 
         const prices = data.quotes.map(q => ({
           time: Math.floor(new Date(q.date).getTime() / 1000),
@@ -641,7 +806,7 @@
         const vols = data.quotes.map(q => ({
           time: Math.floor(new Date(q.date).getTime() / 1000),
           value: q.volume || 0,
-          color: q.close >= q.open ? '#00e67630' : '#ff525230'
+          color: q.close >= q.open ? '#0071e32e' : '#c9342f2e'
         })).filter(d => d.time);
 
         lineSeries.setData(prices);
@@ -662,7 +827,7 @@
     // ===== Holdings =====
     async function loadHoldings() {
       try {
-        state.holdings = await fetchJSON('/api/holdings');
+        state.holdings = await fetchJSON(apiUrl('/api/holdings'));
         renderHoldings();
       } catch (e) { console.error('Holdings failed:', e); }
     }
@@ -672,14 +837,26 @@
       if (!h) return;
 
       document.getElementById('holdings-date').textContent = h.asOf;
-      document.getElementById('expense-gross').textContent = h.expenseRatio.gross + '%';
-      document.getElementById('expense-net').textContent = h.expenseRatio.net + '%';
-      document.getElementById('fee-waiver').textContent = h.expenseRatio.waiverExpiry;
+      document.getElementById('holdings-count').textContent = h.holdings.length;
+
+      // Expense ratio (only if available)
+      if (h.expenseRatio) {
+        document.getElementById('expense-gross').textContent = h.expenseRatio.gross + '%';
+        document.getElementById('expense-net').textContent = h.expenseRatio.net + '%';
+        document.getElementById('fee-waiver').textContent = h.expenseRatio.waiverExpiry;
+        document.getElementById('detail-expense-gross-row').style.display = '';
+        document.getElementById('detail-expense-net-row').style.display = '';
+        document.getElementById('detail-fee-waiver-row').style.display = '';
+      } else {
+        document.getElementById('detail-expense-gross-row').style.display = 'none';
+        document.getElementById('detail-expense-net-row').style.display = 'none';
+        document.getElementById('detail-fee-waiver-row').style.display = 'none';
+      }
 
       const ctx = document.getElementById('holdings-chart').getContext('2d');
       if (holdingsChartInstance) holdingsChartInstance.destroy();
 
-      const colors = ['#6366f1', '#8b5cf6', '#a78bfa', '#38bdf8', '#22d3ee', '#2dd4bf', '#34d399', '#475569'];
+      const colors = ['#0071e3','#2997ff','#6cb8ff','#a0d2ff','#c6e4ff','#6e6e73','#9b9ba1','#c6c6cc','#86a7c0','#d2d2d7'];
 
       holdingsChartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -688,9 +865,9 @@
           datasets: [{
             data: h.holdings.map(x => x.weight),
             backgroundColor: colors,
-            borderColor: '#0c1018',
+            borderColor: '#ffffff',
             borderWidth: 3,
-            hoverBorderColor: '#1a2233',
+            hoverBorderColor: '#d2d2d7',
             hoverOffset: 6
           }]
         },
@@ -701,11 +878,11 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#121821ee',
-              borderColor: '#1a2233',
+              backgroundColor: '#1d1d1fee',
+              borderColor: '#d2d2d7',
               borderWidth: 1,
               titleFont: { family: 'Inter', size: 12, weight: '600' },
-              bodyFont: { family: 'JetBrains Mono', size: 11 },
+              bodyFont: { family: 'ui-monospace', size: 11 },
               padding: 12,
               cornerRadius: 10,
               callbacks: { label: ctx => ` ${ctx.parsed}%` }
@@ -717,7 +894,7 @@
       const legend = document.getElementById('holdings-legend');
       legend.innerHTML = h.holdings.map((x, i) =>
         `<div class="flex items-center gap-3 py-2 px-2 -mx-2 rounded-lg stat-row">
-          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${colors[i]}"></span>
+          <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${colors[i % colors.length]}"></span>
           <span class="text-sm text-txt truncate flex-1">${x.name}</span>
           <span class="text-xs text-txt-faint">${x.sector}</span>
           <span class="text-sm font-mono text-txt font-medium w-14 text-right">${x.weight}%</span>
@@ -725,12 +902,14 @@
       ).join('');
 
       const newInv = document.getElementById('new-investments');
-      if (h.newInvestments.length) {
+      if (h.newInvestments?.length) {
         newInv.innerHTML = `
           <div class="text-[11px] text-txt-faint uppercase tracking-wider mb-2">New Investments</div>
           <div class="flex gap-2 flex-wrap">
             ${h.newInvestments.map(x => `<span class="tag bg-green/10 text-green border border-green/20">${x.name}</span>`).join('')}
           </div>`;
+      } else {
+        newInv.innerHTML = '';
       }
     }
 
@@ -755,13 +934,13 @@
           datasets: [{
             label: 'NAV / Share',
             data: nav.map(e => e.nav),
-            borderColor: '#00e676',
-            backgroundColor: '#00e67612',
+            borderColor: '#0071e3',
+            backgroundColor: '#0071e312',
             fill: true,
             tension: 0.4,
             pointRadius: 5,
-            pointBackgroundColor: '#06080d',
-            pointBorderColor: '#00e676',
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: '#248a3d',
             pointBorderWidth: 2,
             pointHoverRadius: 7
           }]
@@ -772,10 +951,10 @@
           plugins: {
             legend: { display: false },
             tooltip: {
-              backgroundColor: '#121821ee',
-              borderColor: '#1a2233',
+              backgroundColor: '#1d1d1fee',
+              borderColor: '#d2d2d7',
               borderWidth: 1,
-              bodyFont: { family: 'JetBrains Mono', size: 12 },
+              bodyFont: { family: 'ui-monospace', size: 12 },
               padding: 12,
               cornerRadius: 10,
               callbacks: { label: ctx => `NAV: $${ctx.parsed.y.toFixed(2)}` }
@@ -783,13 +962,13 @@
           },
           scales: {
             x: {
-              ticks: { color: '#475569', font: { size: 10, family: 'JetBrains Mono' } },
-              grid: { color: '#1a223322' },
+              ticks: { color: '#475569', font: { size: 10, family: 'ui-monospace' } },
+              grid: { color: '#d2d2d755' },
               border: { display: false }
             },
             y: {
-              ticks: { color: '#475569', font: { size: 10, family: 'JetBrains Mono' }, callback: v => '$' + v },
-              grid: { color: '#1a223322' },
+              ticks: { color: '#475569', font: { size: 10, family: 'ui-monospace' }, callback: v => '$' + v },
+              grid: { color: '#d2d2d755' },
               border: { display: false }
             }
           }
@@ -800,10 +979,136 @@
     // ===== Estimated NAV & Valuation Tracker =====
     async function loadEstimatedNAV() {
       try {
-        state.estimatedNAV = await fetchJSON('/api/estimated-nav');
+        const [estimated, history] = await Promise.all([
+          fetchJSON(apiUrl('/api/estimated-nav')),
+          fetchJSON(apiUrl('/api/estimated-nav-history'))
+        ]);
+        state.estimatedNAV = estimated;
+        state.estimatedHistory = history.points || [];
         renderEstimatedNAV();
         renderValuationTracker();
+        renderEstimatedNAVTimeline();
+
+        // Update interval fund details from estimated-nav data
+        if (!isMarketFund() && state.estimatedNAV) {
+          const d = state.estimatedNAV;
+          if (d.sharesOutstanding) document.getElementById('detail-shares').textContent = d.sharesOutstanding.toLocaleString();
+          if (d.cashValue) document.getElementById('detail-cash').textContent = fmtCap(d.cashValue);
+          const totalAssets = d.totalOfficialValue ? d.totalOfficialValue + d.cashValue : null;
+          if (totalAssets) document.getElementById('detail-net-assets').textContent = fmtCap(totalAssets);
+        }
       } catch (e) { console.error('Estimated NAV failed:', e); }
+    }
+
+    function openNavPointModal(point) {
+      const modal = document.getElementById('nav-point-modal');
+      const title = document.getElementById('nav-point-title');
+      const subtitle = document.getElementById('nav-point-subtitle');
+      const body = document.getElementById('nav-point-body');
+      title.textContent = `Estimated NAV ${fmtUSD(point.estimatedNAV)}`;
+      subtitle.textContent = `${point.date} · ${point.confidence || 'low'} confidence`;
+
+      const holdings = point.holdings || [];
+      body.innerHTML = holdings.length ? holdings.map(h => {
+        const val = h.latestValuation;
+        const blocked = h.blockedValuations || [];
+        const sourceHref = `sources.html?fund=${encodeURIComponent(state.currentFund)}&company=${encodeURIComponent(h.key)}`;
+        return `<div class="border border-border rounded-lg p-3 mb-3 bg-bg/40">
+          <div class="flex items-center justify-between gap-3 mb-2">
+            <div>
+              <div class="text-sm text-white font-semibold">${h.name}</div>
+              <div class="text-[11px] text-txt-faint">${h.sector || ''} · ${h.weight || 0}% weight</div>
+            </div>
+            <a class="tag bg-green/10 text-green border border-green/20" href="${sourceHref}">Sources</a>
+          </div>
+          ${val ? `<div class="text-xs text-txt-muted">
+            Used valuation: <span class="text-txt font-mono">$${(val.value / 1e9).toFixed(2)}B</span>
+            <span class="text-txt-faint">(${val.date}, ${val.audit?.publisher || val.source})</span>
+          </div>
+          <div class="mt-1 text-[11px]">
+            ${val.url ? `<a class="text-green hover:underline" href="${val.url}" target="_blank" rel="noopener noreferrer">${val.label || val.url}</a>` : (val.label || '')}
+          </div>` : '<div class="text-xs text-txt-faint">No valuation used for NAV on this date.</div>'}
+          ${blocked.length ? `<div class="mt-2 text-[11px] text-red">${blocked.length} rejected item${blocked.length === 1 ? '' : 's'} on source page.</div>` : ''}
+          ${h.corporateAction ? `<div class="mt-2 text-[11px] text-yellow-400">${h.corporateAction.label}</div>` : ''}
+        </div>`;
+      }).join('') : '<div class="text-sm text-txt-faint">No holding valuation events for this point.</div>';
+
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.getElementById('nav-point-close').focus();
+    }
+
+    function initNavPointModal() {
+      const modal = document.getElementById('nav-point-modal');
+      const closeBtn = document.getElementById('nav-point-close');
+      if (!modal || !closeBtn) return;
+      const close = () => {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+      };
+      closeBtn.addEventListener('click', close);
+      modal.addEventListener('click', event => {
+        if (event.target === modal) close();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && modal.classList.contains('open')) close();
+      });
+    }
+
+    function renderEstimatedNAVTimeline() {
+      const points = state.estimatedHistory || [];
+      const wrap = document.getElementById('estimated-nav-chart-wrap');
+      const empty = document.getElementById('no-estimated-history');
+      if (points.length < 2) {
+        wrap.style.display = 'none';
+        empty.classList.remove('hidden');
+        return;
+      }
+      wrap.style.display = 'block';
+      empty.classList.add('hidden');
+
+      const ctx = document.getElementById('estimated-nav-chart').getContext('2d');
+      if (estimatedNavChartInstance) estimatedNavChartInstance.destroy();
+      estimatedNavChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: points.map(p => p.date),
+          datasets: [{
+            label: 'Estimated NAV',
+            data: points.map(p => p.estimatedNAV),
+            borderColor: '#38bdf8',
+            backgroundColor: '#38bdf812',
+            fill: true,
+            tension: 0.25,
+            pointRadius: 5,
+            pointHoverRadius: 8,
+            pointBackgroundColor: '#ffffff',
+            pointBorderColor: points.map(p => p.confidence === 'high' ? '#248a3d' : p.confidence === 'medium' ? '#946c00' : '#c9342f'),
+            pointBorderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          onClick: (event, elements) => {
+            if (!elements.length) return;
+            openNavPointModal(points[elements[0].index]);
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1d1d1fee',
+              borderColor: '#d2d2d7',
+              borderWidth: 1,
+              callbacks: { label: ctx => `Estimated NAV: $${ctx.parsed.y.toFixed(2)}` }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#475569', font: { size: 10, family: 'ui-monospace' } }, grid: { color: '#d2d2d755' }, border: { display: false } },
+            y: { ticks: { color: '#475569', font: { size: 10, family: 'ui-monospace' }, callback: v => '$' + v }, grid: { color: '#d2d2d755' }, border: { display: false } }
+          }
+        }
+      });
     }
 
     function renderEstimatedNAV() {
@@ -817,10 +1122,10 @@
       const detailEl = document.getElementById('est-nav-detail');
       const estPremEl = document.getElementById('est-premium-value');
 
-      estEl.textContent = fmtUSD(d.estimatedNAV);
+      estEl.textContent = d.estimatedNAV > 0 ? fmtUSD(d.estimatedNAV) : '--';
 
       // Confidence colors
-      const confColors = { high: '#00e676', medium: '#fbbf24', low: '#ff5252' };
+      const confColors = { high: '#248a3d', medium: '#946c00', low: '#c9342f' };
       const confLabels = { high: 'High Confidence', medium: 'Medium', low: 'Low - Stale Data' };
       confDot.style.background = confColors[d.confidence] || '#64748b';
       confLabel.textContent = confLabels[d.confidence] || '--';
@@ -835,11 +1140,11 @@
         detailEl.textContent = `vs. official $${d.officialNAV.nav.toFixed(2)} from ${d.officialNAV.date}`;
       }
 
-      // Estimated premium vs market price
-      if (state.quote?.price && d.estimatedNAV) {
+      // Estimated premium vs market price (only for market funds)
+      if (isMarketFund() && state.quote?.price && d.estimatedNAV > 0) {
         const estPremium = ((state.quote.price - d.estimatedNAV) / d.estimatedNAV) * 100;
         estPremEl.textContent = `Est. premium: ${fmtPct(estPremium)}`;
-        estPremEl.style.color = estPremium >= 0 ? '#ff5252' : '#00e676';
+        estPremEl.style.color = estPremium >= 0 ? '#c9342f' : '#248a3d';
       }
     }
 
@@ -869,6 +1174,13 @@
       if (d.sources?.efts?.status === 'ok') srcNames.push('SEC EFTS');
       srcDetail.textContent = srcNames.length ? `Sources: ${srcNames.join(', ')}` : 'No sources loaded';
 
+      const sourcePageUrl = h => `sources.html?fund=${encodeURIComponent(state.currentFund)}&company=${encodeURIComponent(h.key)}`;
+
+      if (!d.holdings.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-txt-faint">Official NAV only. No private-holding valuation model is active for this product yet.</td></tr>';
+        return;
+      }
+
       // Table rows
       tbody.innerHTML = d.holdings.map(h => {
         const filingVal = h.valuationAtFiling ? `$${(h.valuationAtFiling / 1e9).toFixed(1)}B` : '--';
@@ -876,20 +1188,29 @@
         const changePct = h.multiplier !== 1 ? ((h.multiplier - 1) * 100).toFixed(1) : '0.0';
         const changeColor = h.multiplier > 1 ? 'text-green' : h.multiplier < 1 ? 'text-red' : 'text-txt-faint';
         const changePrefix = h.multiplier >= 1 ? '+' : '';
+        const blockedCount = h.blockedValuations?.length || 0;
+        const corporateAction = Boolean(h.corporateAction);
 
-        // Data freshness dot
+        // Verification freshness dot. Valuation date is shown in the source page.
         let freshColor = '#475569'; // no data
-        if (h.dataAgeDays !== null) {
-          if (h.dataAgeDays < 30) freshColor = '#00e676';
-          else if (h.dataAgeDays < 90) freshColor = '#fbbf24';
-          else freshColor = '#ff5252';
+        const verifiedDays = h.verificationAgeDays;
+        if (verifiedDays !== null && verifiedDays !== undefined) {
+          if (verifiedDays < 7) freshColor = '#248a3d';
+          else if (verifiedDays < 30) freshColor = '#946c00';
+          else freshColor = '#c9342f';
         }
 
-        const srcLabel = h.latestValuation ? {
+        const displaySource = h.latestValuation || h.blockedValuations?.[0] || null;
+        const srcLabel = displaySource ? {
           cbinsights: 'CB Insights', news: 'News', formD: 'Form D', efts: 'EFTS'
-        }[h.latestValuation.source] || h.latestValuation.source : '--';
+        }[displaySource.source] || displaySource.source : 'Sources';
 
-        const ageLabel = h.dataAgeDays !== null ? `${h.dataAgeDays}d` : '--';
+        const ageLabel = verifiedDays !== null && verifiedDays !== undefined ? (verifiedDays === 0 ? 'today' : `${verifiedDays}d`) : '--';
+        const audit = displaySource?.audit;
+        const trustClass = audit?.trustLevel === 'high' ? 'text-green border-green/20 bg-green/10' :
+          audit?.trustLevel === 'medium' ? 'text-yellow-400 border-yellow-400/20 bg-yellow-400/10' :
+          'text-txt-muted border-border bg-border';
+        const sourceLink = sourcePageUrl(h);
 
         return `<tr class="stat-row">
           <td class="px-2 py-2.5">
@@ -897,6 +1218,8 @@
               <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:${freshColor}"></span>
               <span class="text-txt font-medium">${h.name}</span>
               <span class="text-[10px] text-txt-faint">${h.sector}</span>
+              ${blockedCount ? `<span class="tag bg-red/10 text-red border border-red/20">${blockedCount} rejected</span>` : ''}
+              ${corporateAction ? `<span class="tag bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">Corporate action</span>` : ''}
             </div>
           </td>
           <td class="px-2 py-2.5 text-right font-mono text-txt-muted">${h.weight}%</td>
@@ -904,7 +1227,7 @@
           <td class="px-2 py-2.5 text-right font-mono text-txt font-medium">${latestVal}</td>
           <td class="px-2 py-2.5 text-right font-mono ${changeColor} font-medium">${changePrefix}${changePct}%</td>
           <td class="px-2 py-2.5 text-left">
-            <span class="tag bg-border text-txt-muted">${srcLabel}</span>
+            <a class="tag border ${trustClass} hover:border-green/50" href="${sourceLink}">${srcLabel}</a>
           </td>
           <td class="px-2 py-2.5 text-right font-mono text-txt-faint">${ageLabel}</td>
         </tr>`;
@@ -913,11 +1236,12 @@
 
     // ===== Market Status =====
     async function checkMarketStatus() {
+      if (!isMarketFund()) return;
       try {
         const s = await fetchJSON('/api/status');
         const dot = document.getElementById('status-dot');
         const text = document.getElementById('status-text');
-        const map = { open: ['#00e676', 'Market Open'], 'pre-market': ['#fbbf24', 'Pre-Market'], 'after-hours': ['#fbbf24', 'After Hours'], closed: ['#64748b', 'Closed'] };
+        const map = { open: ['#248a3d', 'Market Open'], 'pre-market': ['#946c00', 'Pre-Market'], 'after-hours': ['#946c00', 'After Hours'], closed: ['#64748b', 'Closed'] };
         const [color, label] = map[s.marketStatus] || map.closed;
         dot.style.background = color;
         text.textContent = `${label} \u00b7 ${s.easternTime} ET`;
@@ -928,21 +1252,61 @@
     // ===== Auto Refresh =====
     function startAutoRefresh() {
       if (refreshTimer) clearInterval(refreshTimer);
-      refreshTimer = setInterval(refreshQuote, state.isMarketHours ? 30000 : 300000);
+      if (isMarketFund()) {
+        refreshTimer = setInterval(refreshQuote, state.isMarketHours ? 30000 : 300000);
+      } else {
+        // For non-market funds, just refresh estimated NAV every 5 min
+        refreshTimer = setInterval(loadEstimatedNAV, 300000);
+      }
     }
 
     // ===== Init =====
     async function init() {
+      initHelpModal();
+      initNavPointModal();
+      // Load fund list
+      state.funds = await fetchJSON('/api/funds');
+
+      // Determine initial fund from URL hash or default to first
+      const hash = window.location.hash.slice(1);
+      state.currentFund = state.funds.find(f => f.id === hash) ? hash : state.funds[0].id;
+
+      renderFundTabs();
+      updateUIForFund();
       initPriceChart();
-      await Promise.all([refreshQuote(), refreshChart('3m'), loadNavHistory(), loadHoldings(), loadEstimatedNAV(), checkMarketStatus()]);
+
+      const tasks = [loadNavHistory(), loadHoldings(), loadEstimatedNAV()];
+      if (isMarketFund()) {
+        tasks.push(refreshQuote(), refreshChart('3m'), checkMarketStatus());
+      }
+      await Promise.all(tasks);
+
       startAutoRefresh();
       setInterval(async () => {
+        if (!isMarketFund()) return;
         const was = state.isMarketHours;
         await checkMarketStatus();
         if (was !== state.isMarketHours) startAutoRefresh();
       }, 60000);
     }
 
+    // Handle back/forward for hash changes
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.slice(1);
+      if (hash && hash !== state.currentFund) switchFund(hash);
+    });
+
+    document.getElementById('fund-tabs').addEventListener('keydown',async event=>{
+      const buttons=[...document.querySelectorAll('.fund-tab')];const index=buttons.indexOf(document.activeElement);if(index<0)return;
+      let next;if(event.key==='ArrowRight')next=(index+1)%buttons.length;else if(event.key==='ArrowLeft')next=(index-1+buttons.length)%buttons.length;else if(event.key==='Home')next=0;else if(event.key==='End')next=buttons.length-1;else return;
+      event.preventDefault();const fund=buttons[next].dataset.fund;await switchFund(fund);document.querySelector(`[data-fund="${fund}"]`)?.focus();
+    });
+    document.addEventListener('keydown',event=>{
+      if(event.key!=='Tab')return;const modal=document.querySelector('.modal-backdrop.open');if(!modal)return;
+      const focusable=[...modal.querySelectorAll('button,a[href],input,[tabindex="0"]')].filter(el=>el.offsetParent!==null);
+      const first=focusable[0],last=focusable.at(-1);if(!first)return;
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    });
     init();
   </script>
 </body>
