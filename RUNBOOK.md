@@ -1,3 +1,11 @@
+# Research, SEO and ad reservations (2026-11-03)
+
+- Research pages, fund profiles, issuer exposures, methodology, local look-through calculator, dated source calendar and RSS are generated only on the designated builder. Editable dashboard templates live in `content/templates/`; generated `public/` HTML is never a template input.
+- Advertising remains disabled. Publisher/slot IDs, an appropriate consent integration and updated public contact/privacy disclosures are required before activation. `ads.txt` contains comments only. Read `ops/README.md`.
+- `nav-content-publish.timer` publishes at 12:30 UTC daily, plus up to ten minutes jitter, after the existing valuation audit. It only collects public read-only APIs and bounded dated company HTML, builds on the builder and installs verified static artifacts. No private source financial files or credentials are transferred.
+- Only substantive pages enter sitemap.xml. Missing holdings profiles and thin date archives use noindex. Event/publication dates are never refreshed merely because a collector runs again.
+- Static receipts/backups live in `/opt/nav-monitor/content-releases/`. Rollback is static-file-specific; do not restore data, restart containers or restart the shared tunnel. Full commands and acceptance gates: `ops/README.md`.
+
 # Current daily maintenance (2026-11-03)
 
 - Public app stays in the existing `nav-monitor` Docker container on loopback port 4000. Do not restart the shared Cloudflare Tunnel for maintenance.

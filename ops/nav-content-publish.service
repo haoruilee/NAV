@@ -1,0 +1,12 @@
+[Unit]
+Description=NAV Monitor builder-only static research publication
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=oneshot
+WorkingDirectory=/
+ExecStart=/bin/bash /home/claudeuser/nav-monitor/ops/publish.sh
+TimeoutStartSec=20min
+Nice=15
+IOSchedulingClass=idle
+UMask=0077

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NAV Monitor — Track Closed-End Fund NAV, Premiums & Holdings Valuations</title>
-  <meta name="description" content="Real-time NAV tracker for closed-end venture capital funds. Monitor net asset value, market premium/discount, portfolio holdings, and estimated valuations from SEC EDGAR filings.">
+  <title>Fund NAV, Holdings Look-through & Research | NAV Monitor</title>
+  <meta name="description" content="Explore dated fund NAV, disclosed company holdings, portfolio overlap, valuation methods and original source-backed research guides.">
   <meta name="keywords" content="NAV monitor, closed-end fund, net asset value, fund premium discount, venture capital fund tracker, SEC EDGAR, holdings valuation">
   <link rel="canonical" href="https://etfnav.org/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="NAV Monitor — Closed-End Fund NAV & Premium Tracker">
-  <meta property="og:description" content="Track net asset value, market premiums/discounts, and portfolio holdings valuations for closed-end venture capital funds. Data sourced from SEC EDGAR, CB Insights, and Yahoo Finance.">
+  <meta property="og:title" content="NAV Monitor — Look beyond the quote">
+  <meta property="og:description" content="Fund NAV, holdings look-through and transparent valuation research.">
   <meta property="og:url" content="https://etfnav.org/">
   <meta property="og:site_name" content="NAV Monitor">
   <meta property="og:locale" content="en_US">
@@ -19,7 +19,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="NAV Monitor — Closed-End Fund NAV & Premium Tracker">
-  <meta name="twitter:description" content="Real-time NAV tracker for closed-end venture capital funds. Monitor premiums, holdings, and estimated valuations.">
+  <meta name="twitter:description" content="Dated NAV records and valuation research for listed and interval funds. Monitor premiums, holdings, and estimated valuations.">
 
   <!-- Structured Data: WebApplication -->
   <script type="application/ld+json">
@@ -27,7 +27,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "NAV Monitor",
-    "description": "Real-time NAV tracker for closed-end venture capital funds. Monitor net asset value, market premium/discount, portfolio holdings, and estimated valuations.",
+    "description": "Dated NAV records and valuation research for listed and interval funds. Monitor net asset value, market premium/discount, portfolio holdings, and estimated valuations.",
     "url": "https://etfnav.org/",
     "applicationCategory": "FinanceApplication",
     "operatingSystem": "Web",
@@ -37,7 +37,7 @@
       "priceCurrency": "USD"
     },
     "featureList": [
-      "Real-time market price tracking",
+      "Market quote tracking",
       "NAV premium/discount calculation",
       "Portfolio holdings breakdown",
       "Estimated NAV from multiple data sources",
@@ -47,32 +47,17 @@
   }
   </script>
 
-  <!-- Structured Data: FinancialProduct -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FinancialProduct",
-    "name": "Robinhood Ventures Fund I (RVI)",
-    "description": "Closed-end fund investing in late-stage private technology companies",
-    "category": "Closed-End Fund",
-    "provider": {
-      "@type": "Organization",
-      "name": "Robinhood Asset Management"
-    }
-  }
-  </script>
-
-  <link rel="stylesheet" href="/assets/nav-apple.e301a03db123.css">
+  <link rel="stylesheet" href="/assets/nav-research.429ada1146d3.css">
 <script src="/assets/lightweight-charts.c6b1f1cad0ab.js"></script>
 <script src="/assets/chart.87364cc2b2a7.js"></script>
 <link rel="icon" href="/assets/nav-icon.svg" type="image/svg+xml">
-</head>
+<meta property="og:image" content="https://etfnav.org/assets/nav-research-cover.e18c7a3e9c42.png"><meta name="twitter:image" content="https://etfnav.org/assets/nav-research-cover.e18c7a3e9c42.png"><link rel="alternate" type="application/rss+xml" title="NAV Monitor source calendar" href="/feed.xml"><script defer src="/assets/publisher.067d428b50bd.js"></script></head>
 <body class="text-txt min-h-screen">
 
-<header class="site-bar"><div class="site-bar-inner"><a class="site-brand" href="/" aria-label="NAV Monitor home"><span class="brand-icon" id="nav-logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18V6m0 12h16M7 14l4-5 4 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="nav-logo-letter" hidden>R</span></span><span id="nav-title">NAV Monitor</span><span id="nav-subtitle" class="sr-only">Fund value tracker</span></a><button type="button" class="method-button" id="help-open" aria-label="About ETF NAV tracking">Methodology</button></div></header>
+<header class="site-bar"><div class="site-bar-inner"><a class="site-brand" href="/" aria-label="NAV Monitor home"><span class="brand-icon" id="nav-logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 18V6m0 12h16M7 14l4-5 4 3 5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="nav-logo-letter" hidden>R</span></span><span id="nav-title">NAV Monitor</span><span id="nav-subtitle" class="sr-only">Fund value tracker</span></a><nav class="primary-nav" aria-label="Research navigation"><a href="/funds/">Funds</a><a href="/look-through/">Look-through</a><a href="/insights/">Insights</a><a href="/news/">Source calendar</a></nav><button type="button" class="method-button" id="help-open" aria-label="About ETF NAV tracking">Methodology</button></div></header>
 <nav class="fund-navigation" aria-label="Fund navigation"><div id="fund-tabs" role="tablist" aria-label="Select fund"></div></nav>
   <main class="dashboard">
-    <section class="page-intro"><h1>Fund value. In perspective.</h1><p>Official NAV, market price, and the evidence behind them.</p><div class="market-status"><span id="status-dot" class="w-1.5 h-1.5 rounded-full" style="background:#76767b"></span><span id="status-text">Checking market status</span><span id="last-updated"></span></div></section>
+    <section class="page-intro"><h1>Fund value. In perspective.</h1><p>Dated NAV records, market quotes, and the evidence behind them.</p><div class="market-status"><span id="status-dot" class="w-1.5 h-1.5 rounded-full" style="background:#76767b"></span><span id="status-text">Checking market status</span><span id="last-updated"></span></div></section>
 
     <!-- Row 1: Price Hero + NAV Card -->
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-5" id="row-hero">
@@ -362,7 +347,7 @@
         <div class="text-txt-faint text-xs">Historical filings will appear here when available.</div>
       </div>
     </div>
-  </main>
+  <aside class="ad-reservation" aria-label="Advertisements" data-ad-slot-key="dashboard_banner"><span class="ad-label">Advertisements</span><div class="ad-placeholder">Advertising placement reserved</div></aside><section class="research-home"><div class="section-heading"><h2>Look beyond the quote.</h2><a href="/insights/">All research guides ↗</a></div><p class="section-deck">Explore dated fund profiles, understand overlapping holdings and inspect the assumptions behind estimated NAV.</p><div class="research-shortcuts"><a href="/funds/">Compare 9 fund records ↗</a><a href="/look-through/">Calculate holdings overlap ↗</a><a href="/methodology/">Inspect the model ↗</a></div><div class="reading-grid"><article class="editorial-card"><span class="reading-label">Fund fundamentals · 5 min</span><h3><a href="/insights/nav-premium-discount/">NAV vs. market price: read the premium, not just the ticker</a></h3><p>A worked guide to fund premiums and discounts, with dates, denominator checks and limits of comparing traded prices with reported NAV.</p><a class="text-link" href="/insights/nav-premium-discount/">Read the guide <span aria-hidden="true">↗</span></a></article><article class="editorial-card"><span class="reading-label">Our methodology · 7 min</span><h3><a href="/insights/estimated-nav-model/">Inside the estimated NAV model: every step and its limits</a></h3><p>How filing fair values, company valuation ratios, configured cash and share counts become an estimate—and why that estimate is not official NAV.</p><a class="text-link" href="/insights/estimated-nav-model/">Read the guide <span aria-hidden="true">↗</span></a></article><article class="editorial-card"><span class="reading-label">Portfolio research · 6 min</span><h3><a href="/insights/holdings-look-through-overlap/">Look through the fund: exposure, overlap and the missing slice</a></h3><p>Calculate issuer exposure across funds without normalizing away missing holdings or confusing fund shares with direct ownership.</p><a class="text-link" href="/insights/holdings-look-through-overlap/">Read the guide <span aria-hidden="true">↗</span></a></article></div><div class="section-heading"><h2>Dated source references</h2><a href="/news/">Source calendar ↗</a></div><article class="source-record" id="ramp-2026-10-26-5-lessons-from-putting-ai-to-work-with-enterprise-finance-teams" data-event-month="2026-10"><div class="record-date"><time datetime="2026-10-26">2026-10-26</time><small>Publisher announcement</small></div><div><h3><a href="https://ramp.com/blog/5-lessons-from-putting-ai-to-work" target="_blank" rel="noopener noreferrer">5 Lessons From Putting AI to Work With Enterprise Finance Teams</a></h3><p>Ramp · <a href="/holdings/ramp/">Disclosed fund exposure ↗</a></p><p class="muted">A source document is not, by itself, a fund NAV change. Check the event date, entity and share-class assumptions before using it as a model input.</p><span class="source-domain">ramp.com</span></div></article><article class="source-record" id="elevenlabs-2026-09-08-ethan-tandowsky-joins-elevenlabs-as-chief-financial-officer" data-event-month="2026-09"><div class="record-date"><time datetime="2026-09-08">2026-09-08</time><small>Publisher announcement</small></div><div><h3><a href="https://elevenlabs.io/blog/cfo" target="_blank" rel="noopener noreferrer">Ethan Tandowsky joins ElevenLabs as Chief Financial Officer</a></h3><p>ElevenLabs · No mapped position weight in this view</p><p class="muted">A source document is not, by itself, a fund NAV change. Check the event date, entity and share-class assumptions before using it as a model input.</p><span class="source-domain">elevenlabs.io</span></div></article><article class="source-record" id="ramp-2026-06-10-introducing-ramp-applied-ai-solutions" data-event-month="2026-06"><div class="record-date"><time datetime="2026-06-10">2026-06-10</time><small>Publisher announcement</small></div><div><h3><a href="https://ramp.com/blog/introducing-ramp-applied-ai-solutions" target="_blank" rel="noopener noreferrer">Introducing Ramp Applied AI Solutions</a></h3><p>Ramp · <a href="/holdings/ramp/">Disclosed fund exposure ↗</a></p><p class="muted">A source document is not, by itself, a fund NAV change. Check the event date, entity and share-class assumptions before using it as a model input.</p><span class="source-domain">ramp.com</span></div></article><div class="fund-index-links"><a href="/funds/rvi/">RVI NAV &amp; holdings</a><a href="/funds/usvc/">USVC NAV &amp; holdings</a><a href="/funds/dxyz/">DXYZ NAV &amp; holdings</a><a href="/funds/vcx/">VCX NAV &amp; holdings</a><a href="/funds/ssss/">SSSS NAV &amp; holdings</a><a href="/funds/xovr/">XOVR NAV &amp; holdings</a><a href="/funds/agix/">AGIX NAV &amp; holdings</a><a href="/funds/ronb/">RONB NAV &amp; holdings</a><a href="/funds/nasa/">NASA NAV &amp; holdings</a></div></section><aside class="ad-reservation" aria-label="Advertisements" data-ad-slot-key="research_footer"><span class="ad-label">Advertisements</span><div class="ad-placeholder">Advertising placement reserved</div></aside></main><footer class="research-footer"><div><a href="/funds/">Fund directory</a><a href="/look-through/">Holdings look-through</a><a href="/insights/">Research guides</a><a href="/methodology/">Methodology</a><a href="/editorial-policy/">Editorial policy</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/feed.xml">Source feed</a></div><p>NAV Monitor is an independent research tool. Estimates are not issuer-reported NAV or investment recommendations. Dates and coverage limitations matter.</p></footer>
 
   <!-- Footer -->
   <footer class="site-footer">
@@ -420,29 +405,7 @@
   </div>
 
   <!-- Crawlable content for search engines (noscript fallback) -->
-  <noscript>
-    <section class="max-w-[1400px] mx-auto px-6 py-8 text-gray-300">
-      <h1>NAV Monitor — Closed-End Fund NAV & Premium Tracker</h1>
-      <p>Track net asset value (NAV), market premiums and discounts, portfolio holdings, and estimated valuations for closed-end venture capital funds.</p>
-      <h2>Features</h2>
-      <ul>
-        <li>Real-time market price and NAV tracking</li>
-        <li>Premium/discount calculation and historical charting</li>
-        <li>Portfolio holdings breakdown with sector allocation</li>
-        <li>Multi-source estimated NAV from SEC filings, CB Insights, and news</li>
-        <li>52-week price range and volume data from Yahoo Finance</li>
-        <li>Automated SEC EDGAR filing integration for official NAV</li>
-      </ul>
-      <h2>Tracked Funds</h2>
-      <ul>
-        <li><strong>RVI</strong> — Robinhood Ventures Fund I (NYSE, Closed-End Fund)</li>
-        <li><strong>USVC</strong> — US Venture Capital Fund (Interval Fund)</li>
-      </ul>
-      <h2>Data Sources</h2>
-      <p>NAV Monitor aggregates data from SEC EDGAR quarterly filings, CB Insights unicorn valuations, Google News funding headlines, SEC Form D filings, and Yahoo Finance market data.</p>
-      <p>This application requires JavaScript to display real-time data.</p>
-    </section>
-  </noscript>
+  <noscript><section class="scope-note"><p>Interactive charts require JavaScript. Fund profiles, research guides, methodology and dated source references remain readable without it.</p><p><a href="/funds/">Browse fund records</a> · <a href="/look-through/">Holdings look-through</a> · <a href="/insights/">Read the guides</a></p></section></noscript>
 
   <script>
     Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif';

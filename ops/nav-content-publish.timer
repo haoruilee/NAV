@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily NAV Monitor public research snapshot publication
+[Timer]
+OnCalendar=*-*-* 12:30:00 UTC
+RandomizedDelaySec=10m
+Persistent=true
+Unit=nav-content-publish.service
+[Install]
+WantedBy=timers.target
