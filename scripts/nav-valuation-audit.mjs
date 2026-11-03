@@ -453,7 +453,7 @@ async function main() {
     return;
   }
 
-  if (!candidates.length) { run.status='no_new_evidence';event(run,'completed','No changed evidence; no model request.',{noModelRequest:true});writeJSON(runPath,run);console.log(JSON.stringify({runId,status:run.status}));return; }
+  if (!candidates.length) { run.status='ready';run.outcome='no_new_evidence';event(run,'completed','No changed evidence; no model request.',{noModelRequest:true});writeJSON(runPath,run);console.log(JSON.stringify({runId,status:run.status,outcome:run.outcome}));return; }
 
   event(run, 'provider_selected', 'Using Claude Code CLI provider through tmux.');
   writeJSON(runPath, run);
@@ -494,7 +494,8 @@ async function main() {
     event(run, 'dry_run', 'Skipped apply because --no-apply was set.');
   }
 
-  run.status = validation.data.ready ? (hasFlag('--no-apply') ? 'dry_run' : (applyResult.applied.length ? 'updated' : 'completed_no_change')) : 'blocked';
+  run.outcome = validation.data.ready ? (hasFlag('--no-apply') ? 'dry_run' : (applyResult.applied.length ? 'updated' : 'completed_no_change')) : 'blocked';
+  run.status = validation.data.ready ? (hasFlag('--no-apply') ? 'dry_run' : 'ready') : 'blocked';
   event(run, 'outbox_validated', 'Agent outbox passed schema checks.', {
     ready: validation.data.ready,
     riskLevel: validation.data.riskLevel,
@@ -502,8 +503,9 @@ async function main() {
     applied: applyResult.applied.length,
     skipped: applyResult.skipped.length
   });
+  event(run,'completed',`Validated ${validation.data.decisions.length} decisions; inserted ${applyResult.applied.length} new records. Outcome: ${run.outcome}.`,{outcome:run.outcome,applied:applyResult.applied.length,skipped:applyResult.skipped.length});
   writeJSON(runPath, run);
-  console.log(JSON.stringify({ runId, status: run.status, outboxPath, runPath, applyResult }, null, 2));
+  console.log(JSON.stringify({ runId, status: run.status, outcome:run.outcome, outboxPath, runPath, applyResult }, null, 2));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) main().catch(err => {

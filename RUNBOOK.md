@@ -8,7 +8,7 @@
 - All eligible company pairs must receive exactly one decision. The harness checks IDs, schema, finite confidence, no future date, risk and ready state before applying updates.
 - New numerical records require confidence >=0.85, a direct primary domain URL, an exact source quote naming the company and matching the USD amount, and a successful independent harness re-fetch. Unsupported records are rejected or skipped; existing figures remain unchanged. No update is required on a day without verified news.
 - Data files are written atomically with per-run backups, only for affected funds. `lastUpdated` changes only when new data is inserted. Failed review and dry runs never refresh data or verification timestamps.
-- Public `/api/agent-runs` and company source pages show completed/updated/failed lifecycle events. `ready` is not treated as evidence of a successful data update.
+- Public `/api/agent-runs` and company source pages retain the compatible green `ready` status only after validation/apply completes. Lifecycle events state the actual decision and insertion counts; `outcome` distinguishes an update from no change/cache hits. Agent-proposed `ready` alone is never success.
 - Coverage: configured portfolio companies in RVI/USVC; other listed funds without company configuration are explicitly recorded as unconfigured, never fabricated.
 - All code tests run on the designated builder `li@www.xzhtai.cn:2077` using synthetic fixtures, no production data or credentials. This host-script change needs no frontend or Docker build.
 
