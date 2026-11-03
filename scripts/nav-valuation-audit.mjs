@@ -62,7 +62,7 @@ function decodeXml(value) {
     .replace(/&#39;/g, "'");
 }
 
-async function collectNewsCandidates(funds) {
+export async function collectNewsCandidates(funds) {
   const candidates = [];
   const queries = new Map();
   for (const fund of funds) {
@@ -372,7 +372,7 @@ function dispatchClaudeTmux(contextPath, runId) {
   const settings = process.env.NAV_CLAUDE_SETTINGS || join(repoRoot,'.claude/settings.local.json');
   if (!existsSync(settings)) return {ok:false,error:'project_claude_settings_missing'};
   const prompt = `Read ${contextPath}. Follow its complete contract and write only the required outbox. Do not edit product data or code. Do not wait for a human. Stop after writing the outbox.`;
-  const args = ['claude','-p',prompt,'--output-format','json','--effort','low','--disable-slash-commands','--no-session-persistence','--permission-mode','dontAsk','--tools','Read,Write,WebSearch,WebFetch','--allowedTools','Read,Write,WebSearch,WebFetch','--settings',settings,'--max-budget-usd',argValue('--max-budget-usd','8')];
+  const args = ['claude','-p',prompt,'--output-format','stream-json','--verbose','--effort','low','--disable-slash-commands','--no-session-persistence','--permission-mode','dontAsk','--tools','Read,Write,WebSearch,WebFetch','--allowedTools','Read,Write,WebSearch,WebFetch','--settings',settings,'--max-budget-usd',argValue('--max-budget-usd','8')];
   const command = `exec ${args.map(quoteShell).join(' ')} > ${quoteShell(join(harnessRoot,'runs',`${runId}.stdout.json`))} 2> ${quoteShell(join(harnessRoot,'runs',`${runId}.stderr.log`))}`;
   const start=tmux(['new-session','-d','-s',sessionName,'-c',join(harnessRoot,'context'),command]);
   return start.status===0 ? {ok:true,sessionName} : {ok:false,sessionName,error:'tmux_start_failed'};
@@ -431,17 +431,19 @@ async function main() {
   event(run, 'deterministic_audit_completed', 'Local valuation audit rules applied.', { funds: funds.map(f => f.id) });
   writeJSON(latestAuditPath, { runId, generatedAt: new Date().toISOString(), audits });
 
-  if (!hasFlag('--local-only') && !hasFlag('--no-apply')) {
+  if (!hasFlag('--local-only') && !hasFlag('--no-apply') && !hasFlag('--skip-official-nav')) {
     event(run,'official_nav_started','Checking dated per-share NAV disclosures in recent relevant SEC filings.');writeJSON(runPath,run);
     const officialNav=await refreshOfficialNav(repoRoot,funds,runId);
     event(run,'official_nav_completed',`Official NAV refresh added ${officialNav.reduce((n,f)=>n+f.added,0)} dated records.`,{funds:officialNav});writeJSON(runPath,run);
   }
 
   event(run, 'candidate_collection_started', 'Collecting read-only news candidates for Claude Code decisioning.');
-  const allCandidates = hasFlag('--local-only') ? [] : await collectNewsCandidates(funds);
+  const snapshotPath=process.env.NAV_CANDIDATES_SNAPSHOT;
+  const allCandidates = hasFlag('--local-only') ? [] : (snapshotPath && existsSync(snapshotPath) ? readJSON(snapshotPath,[]) : await collectNewsCandidates(funds));
   const checkpointPath=join(harnessRoot,'state','evidence-checkpoint.json');
   const checkpoint=readJSON(checkpointPath,{});
-  const candidates=selectChangedCandidates(allCandidates,checkpoint);
+  const batchLimit=Math.max(1,Math.min(50,Number(process.env.NAV_AUDIT_BATCH_LIMIT)||50));
+  const candidates=selectChangedCandidates(allCandidates,checkpoint).slice(0,batchLimit);
   if (!hasFlag('--local-only') && allCandidates.every(c=>c.status!=='ok')) throw new Error('all_collectors_failed');
   event(run, 'candidate_collection_completed', 'News candidate collection completed.', {
     companies: allCandidates.length, eligible: candidates.length, cached: allCandidates.length-candidates.length,
@@ -465,6 +467,7 @@ async function main() {
   event(run, 'provider_selected', 'Using Claude Code CLI provider through tmux.');
   writeJSON(runPath, run);
 
+  if (!hasFlag('--no-apply')) { for(const c of candidates){const key=`${c.fundId}/${c.companyKey}`;checkpoint[key]={...(checkpoint[key]||{}),lastAttemptAt:Date.now()};} writeJSON(checkpointPath,checkpoint); }
   const dispatch = dispatchClaudeTmux(contextPath, runId);
   if (!dispatch.ok) {
     run.status = 'failed';
@@ -495,7 +498,7 @@ async function main() {
     event(run, 'apply_started', 'Applying validated agent valuation updates.');
     applyResult = await applyAgentUpdates(validation.data, run);
     const retryKeys=new Set(applyResult.skipped.filter(d=>d.action==='update' && d.reason!=='duplicate_valuation').map(d=>`${d.fundId}/${d.companyKey}`));
-    for (const c of candidates) if (c.status==='ok' && !retryKeys.has(`${c.fundId}/${c.companyKey}`)) checkpoint[`${c.fundId}/${c.companyKey}`]={fingerprint:candidateFingerprint(c),at:Date.now()};
+    for (const c of candidates) if (c.status==='ok' && !retryKeys.has(`${c.fundId}/${c.companyKey}`)) checkpoint[`${c.fundId}/${c.companyKey}`]={fingerprint:candidateFingerprint(c),at:Date.now(),lastAttemptAt:Date.now()};
     writeJSON(checkpointPath,checkpoint);
   } else if (hasFlag('--no-apply')) {
     event(run, 'dry_run', 'Skipped apply because --no-apply was set.');
@@ -526,7 +529,7 @@ export function candidateFingerprint(candidate) {
   return createHash('sha256').update(JSON.stringify({version:2,company:candidate.companyKey,items:(candidate.items||[]).map(i=>({title:i.title,url:i.url,pubDate:i.pubDate})).sort((a,b)=>a.url.localeCompare(b.url))})).digest('hex');
 }
 export function selectChangedCandidates(candidates,cache,now=Date.now()) {
-  return candidates.filter(c=>{if(c.status!=='ok') return false;const previous=cache[`${c.fundId}/${c.companyKey}`];return !previous || previous.fingerprint!==candidateFingerprint(c) || !Number.isFinite(previous.at) || previous.at>now || now-previous.at>=7*86400000;});
+  return candidates.filter(c=>{if(c.status!=='ok') return false;const previous=cache[`${c.fundId}/${c.companyKey}`];return !previous || previous.fingerprint!==candidateFingerprint(c) || !Number.isFinite(previous.at) || previous.at>now || now-previous.at>=7*86400000;}).sort((a,b)=>(cache[`${a.fundId}/${a.companyKey}`]?.lastAttemptAt||0)-(cache[`${b.fundId}/${b.companyKey}`]?.lastAttemptAt||0));
 }
 const primaryDomains={databricks:'databricks.com',revolut:'revolut.com',mercor:'mercor.com',airwallex:'airwallex.com',boom:'boomsupersonic.com',oura:'ouraring.com',ramp:'ramp.com',openai:'openai.com',elevenlabs:'elevenlabs.io',stripe:'stripe.com',xai:'x.ai',crusoe:'crusoe.ai',anthropic:'anthropic.com',sierra:'sierra.ai',legora:'legora.com',vercel:'vercel.com'};
 export function trustedEvidenceHost(url,key) {

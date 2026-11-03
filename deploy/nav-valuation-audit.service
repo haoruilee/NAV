@@ -11,5 +11,7 @@ Environment=PATH=/usr/local/bin:/usr/bin:/bin
 Environment=TERM=xterm-256color
 WorkingDirectory=/home/claudeuser/nav-monitor
 Environment=NAV_CLAUDE_SETTINGS=/home/claudeuser/nav-monitor/.claude/settings.local.json
-ExecStart=/usr/bin/flock -n /tmp/nav-valuation-audit.lock /usr/bin/node /home/claudeuser/nav-monitor/scripts/nav-valuation-audit.mjs --timeout-ms=1200000
-TimeoutStartSec=30min
+ExecStart=/usr/bin/flock -n /tmp/nav-valuation-audit.lock /usr/bin/node /home/claudeuser/nav-monitor/scripts/nav-daily-maintenance.mjs
+TimeoutStartSec=100min
+TimeoutStopSec=30s
+SendSIGKILL=no
