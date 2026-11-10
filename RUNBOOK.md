@@ -1,3 +1,20 @@
+# AdSense account verification (2026-11-10)
+
+The repository also records the deployed multi-fund Express server, package scripts and Docker definitions. Runtime data and private settings remain in host volumes and are excluded from commits.
+
+The live Express site is `/home/claudeuser/nav-monitor`, container `nav-monitor`,
+loopback port 4000. Its Git remote is `haoruilee/NAV`; the research deployment
+was tracked on `codex/nav-research-seo-20261103`, ahead of the old default branch.
+Homepage source is `content/templates/index.html`; generated output is `public/index.html`.
+The homepage identifies publisher `ca-pub-7668037987581637` using the account meta.
+`/ads.txt` lists the matching direct publisher entry. The builder generator emits
+that entry from `content/site-config.json`, so daily publication preserves it.
+This verification change adds no advertising script and does not enable ads.
+For static updates preserve the existing page body, copy verified files atomically
+into the container and host checkout, and verify both public hostnames. No service,
+data, valuation job or tunnel restart is required. Keep the builder publication
+source and its complete `inputs.json` hash manifest synchronized.
+
 # Research, SEO and ad reservations (2026-11-03)
 
 - Research pages, fund profiles, issuer exposures, methodology, local look-through calculator, dated source calendar and RSS are generated only on the designated builder. Editable dashboard templates live in `content/templates/`; generated `public/` HTML is never a template input.

@@ -1,0 +1,18 @@
+services:
+  nav-monitor:
+    build: .
+    container_name: nav-monitor
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"
+    volumes:
+      - ./data:/app/data
+      - ./var:/app/var
+    environment:
+      - NODE_ENV=production
+      - ADMIN_KEY=${ADMIN_KEY:-}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:4000/api/funds"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

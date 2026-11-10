@@ -6,7 +6,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "audit:valuations": "node scripts/nav-valuation-audit.mjs",
+    "audit:valuations:local": "node scripts/nav-valuation-audit.mjs --local-only",
+    "audit:valuations:dry-run": "node scripts/nav-valuation-audit.mjs --no-apply"
   },
   "dependencies": {
     "express": "^4.21.0"

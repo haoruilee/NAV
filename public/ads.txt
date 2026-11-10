@@ -1,1 +1,1 @@
-# Advertising is disabled. Add the verified publisher entry only after account and consent setup.
+google.com, pub-7668037987581637, DIRECT, f08c47fec0942fa0

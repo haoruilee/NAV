@@ -1,1 +1,8 @@
 node_modules/
+
+# Runtime state and private machine settings
+.claude/
+.env
+.env.*
+var/
+data/
