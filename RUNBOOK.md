@@ -1,3 +1,13 @@
+# AdSense code-snippet verification (2026-11-10)
+
+The homepage now also includes the owner-provided async `adsbygoogle.js` script
+for `ca-pub-7668037987581637`, alongside its existing account meta and ads.txt.
+The change is in the editable homepage template and the builder input manifest,
+so daily publication preserves it. Privacy disclosures identify the Google
+connection. Manual slot activation remains disabled; automatic ads and CMP
+messages are controlled separately in AdSense. Do not assume the manual slot
+switch prevents automatic ads. No Express or shared-tunnel restart is needed.
+
 # AdSense account verification (2026-11-10)
 
 The repository also records the deployed multi-fund Express server, package scripts and Docker definitions. Runtime data and private settings remain in host volumes and are excluded from commits.
