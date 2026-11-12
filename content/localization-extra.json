@@ -1,0 +1,11 @@
+[
+  "Use allocations between 0 and 100 for known funds.",
+  "Allocations must total 100%.",
+  "Use a non-negative illustrative amount.",
+  "Unclassified",
+  "100.00% allocated",
+  "Market Open",
+  "Pre-Market",
+  "After Hours",
+  "Closed"
+]

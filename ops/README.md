@@ -1,3 +1,25 @@
+# Five-language static publication (2026-11-12)
+
+The public interface and research copy use English, Simplified Chinese, Hindi,
+Spanish and Arabic dictionaries. All generated HTML includes the same-origin
+language selector; Arabic uses RTL. See `content/LOCALIZATION.md`. The existing
+AdSense verification script and account configuration remain unchanged.
+
+Translation is a separately authorized, bounded build-time operation, not a
+visitor-facing API or a daily automatic model job. The configured GLM provider's
+Chat Completions endpoint is used with low reasoning effort; its Anthropic adapter
+did not honor the attempted thinking budget. Credentials remain in the existing
+production settings file and are never copied into artifacts. Keep source-copy
+and dictionary receipts separate from private settings. New external headlines
+without catalog entries remain in the original language until reviewed.
+
+Use `ops/prepare-build.mjs` to stage public sources and pin every input, then run
+`ops/qa-localization.mjs` on the builder. Static installation still uses the
+deployer below with unchanged-container and unchanged-tunnel checks. Synchronize
+the daily builder's source and inputs only after acceptance, or daily publication
+will overwrite the multilingual interface. Preserve backups and never reset the
+dirty production checkout. The publication job itself makes no translation calls.
+
 # Research publishing and advertising
 
 Editable homepage and source-page templates are `content/templates/`. Generated `public/*.html` must never be copied back into these templates, or repeated publication would append duplicate sections.

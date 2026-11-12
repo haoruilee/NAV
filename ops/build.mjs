@@ -2,6 +2,8 @@ import fs from 'node:fs';import path from 'node:path';import crypto from 'node:c
 import {renderSite,navLinks,ad} from '../content/pages.mjs';
 const root=path.resolve(import.meta.dirname,'..'),out=path.resolve(process.argv[3]||root+'/../dist'),snapshot=JSON.parse(fs.readFileSync(process.argv[2])),config=JSON.parse(fs.readFileSync(root+'/content/site-config.json'));
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const requiredCopy=JSON.parse(fs.readFileSync(root+'/content/locales.source.json')),catalog=JSON.parse(fs.readFileSync(root+'/content/locales.json'));
+for(const lang of ['zh','hi','es','ar'])for(const key of requiredCopy){const value=catalog[lang]?.[key];if(typeof value!=='string'||!value.trim())throw Error('incomplete_translation:'+lang);const slots=s=>JSON.stringify((s.match(/\{\{\d+\}\}/g)||[]).sort());if(slots(value)!==slots(key))throw Error('translation_placeholder_mismatch:'+lang);}
 const expected=JSON.parse(fs.readFileSync(root+'/../inputs.json'));for(const[p,h]of Object.entries(expected))if(sha(fs.readFileSync(root+'/'+p))!==h)throw Error('input_drift:'+p);
 fs.mkdirSync(out+'/assets',{recursive:true});
 for(const name of fs.readdirSync(root+'/public/assets'))fs.copyFileSync(root+'/public/assets/'+name,out+'/assets/'+name);
@@ -38,6 +40,10 @@ fs.writeFileSync(out+'/robots.txt','User-agent: *\nAllow: /\nDisallow: /api/\nSi
 const publisher=config.adsense?.clientId;
 fs.writeFileSync(out+'/ads.txt', /^ca-pub-\d{16}$/.test(publisher||'') ? `google.com, ${publisher.slice(3)}, DIRECT, f08c47fec0942fa0\n` : '# Advertising is disabled. Add the verified publisher entry only after account and consent setup.\n');
 fs.writeFileSync(out+'/feed.xml','<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>NAV Monitor source calendar</title><link>'+config.siteURL+'/news/</link><description>Dated source records, not a real-time news wire.</description>'+records.map(r=>`<item><title>${xml(r.title)}</title><link>${xml(r.url)}</link><guid isPermaLink="false">${xml(r.id)}</guid><pubDate>${new Date(r.date+'T12:00:00Z').toUTCString()}</pubDate><description>${xml(r.type+' · '+r.companyName+' · Event date '+r.date+'. A source record is not a fund NAV change.')}</description></item>`).join('')+'</channel></rss>');
+const localeCatalog=asset('locales','json',fs.readFileSync(root+'/content/locales.json'));
+const localizer=asset('localization','js',fs.readFileSync(root+'/content/localization.js'));
+const localeStyle=asset('localization','css',fs.readFileSync(root+'/content/localization.css'));
+function localize(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())localize(p);else if(e.name.endsWith('.html')){let html=fs.readFileSync(p,'utf8');html=html.replace('</head>',`<link rel="stylesheet" href="${localeStyle}"><script defer data-nav-i18n data-catalog="${localeCatalog}" src="${localizer}"></script></head>`);fs.writeFileSync(p,html);}}}localize(out);
 const files={};function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else files[path.relative(out,p)]=sha(fs.readFileSync(p));}}walk(out);
 fs.writeFileSync(out+'/../manifest.json',JSON.stringify({inputHashes:expected,files,records:records.length,indexedPages:indexed.length,pages:pages.size,retrievedAt:snapshot.retrievedAt},null,2));
 console.log(JSON.stringify({pages:pages.size,indexed:indexed.length,sourceRecords:records.length,files:Object.keys(files).length}));

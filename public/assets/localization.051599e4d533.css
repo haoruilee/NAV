@@ -1,0 +1,10 @@
+#nav-language { font:inherit; font-size:13px; color:inherit; border:1px solid #d7dde5; background:var(--surface,#fff); border-radius:999px; padding:7px 10px; max-width:140px; margin-inline-start:10px; }
+.site-bar-inner { flex-wrap:wrap; }
+.primary-nav { flex-wrap:wrap; }
+html[lang="hi"] body { font-family:"Noto Sans Devanagari",sans-serif; }
+html[lang="ar"] body { font-family:"Noto Sans Arabic",sans-serif; }
+html[dir="rtl"] .research-table th,html[dir="rtl"] .research-table td { text-align:start; }
+html[dir="rtl"] canvas,html[dir="rtl"] input[type="number"] { direction:ltr; }
+html[dir="rtl"] .font-mono,html[dir="rtl"] #price-symbol,html[dir="rtl"] #range-52-low,html[dir="rtl"] #range-52-high,html[dir="rtl"] [data-nav-numeric] { direction:ltr; unicode-bidi:isolate; }
+html:not([lang="en"]) .research-intro h1 { overflow-wrap:anywhere; }
+@media(max-width:640px) { #nav-language { margin-block:8px; } .site-bar-inner { gap:8px; } }

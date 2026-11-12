@@ -1,0 +1,12 @@
+// Public research links only. This does not change NAV calculations or data jobs.
+export const kitLanguages = [
+  ['en', 'English', 'Research only. Commercial use is prohibited. Candidate portfolios are not executed trades or verified backtest returns.'],
+  ['zh', '中文', '仅供科研学习，禁止用于商业用途。候选持仓不是成交，也不是已验证的回测收益。'],
+  ['hi', 'हिन्दी', 'केवल शोध के लिए। व्यावसायिक उपयोग निषिद्ध है। प्रस्तावित पोर्टफोलियो निष्पादित ट्रेड या सत्यापित बैकटेस्ट प्रतिफल नहीं हैं।'],
+  ['es', 'Español', 'Solo para investigación. Uso comercial prohibido. Las carteras candidatas no son operaciones ejecutadas ni retornos verificados.'],
+  ['ar', 'العربية', 'للبحث فقط. يُحظر الاستخدام التجاري. المحافظ المرشحة ليست صفقات منفذة أو عوائد اختبار تاريخي متحققة.'],
+];
+
+export function kitResearchPanel() {
+  return `<section class="research-home" aria-labelledby="kit-research"><div class="section-heading"><h2 id="kit-research">KiT: signals, not promises.</h2><a href="https://trading.etfnav.org/strategies?lang=en">Open strategy research ↗</a></div><p class="section-deck">Explore the separate A-share simulation in five languages. Seven research designs use 20-day forecast signals: low-volatility Q1, Q5–Q1 long-short diagnostics, weekly Top-10, a Top-30 retention buffer, return-to-risk ranking, downside quantiles and a return/low-risk blend.</p><p class="scope-note">A 20-day forecast is not necessarily a 20-day holding period: weekly Top-10 targets five trading days. Low-volatility selection measures risk; long-short spreads omit borrowing, margin and execution costs. New variants have not established better returns. The simulation is not connected to a broker and does not affect NAV Monitor’s fund valuation model.</p><div class="reading-grid">${kitLanguages.map(([lang,label,notice]) => `<article class="editorial-card" lang="${lang}" dir="${lang === 'ar' ? 'rtl' : 'ltr'}"><h3><a href="https://trading.etfnav.org/?lang=${lang}">${label} · KiT</a></h3><p>${notice}</p><a class="text-link" href="https://trading.etfnav.org/strategies?lang=${lang}">KiT ↗</a></article>`).join('')}</div><p class="scope-note">No historical performance figure on this page is claimed as a local reproduction. Forecast origin prices must match their anchor bars before candidate portfolios are shown. <a href="https://trading.etfnav.org/research/kit.en.html">Read the research scope</a> · <a href="https://github.com/Luciferbobo/KiT#-community">Contact the authors</a></p></section>`;
+}

@@ -1,0 +1,24 @@
+{
+  "Open": { "zh": "开盘", "hi": "खुलने का भाव", "es": "Apertura", "ar": "سعر الافتتاح" },
+  "High": { "zh": "最高", "hi": "उच्चतम", "es": "Máximo", "ar": "أعلى" },
+  "Low": { "zh": "最低", "hi": "न्यूनतम", "es": "Mínimo", "ar": "أدنى" },
+  "Estimated NAV": { "zh": "估算 NAV", "hi": "अनुमानित NAV", "es": "NAV estimado", "ar": "NAV التقديري" },
+  "Artificial intelligence": {
+    "zh": "人工智能",
+    "hi": "कृत्रिम बुद्धिमत्ता",
+    "es": "Inteligencia artificial",
+    "ar": "الذكاء الاصطناعي"
+  },
+  "Financial technology": {
+    "zh": "金融科技",
+    "hi": "वित्तीय प्रौद्योगिकी",
+    "es": "Tecnología financiera",
+    "ar": "التكنولوجيا المالية"
+  },
+  "Venture / Private technology": {
+    "zh": "创投 / 非上市科技",
+    "hi": "उद्यम पूंजी / निजी प्रौद्योगिकी",
+    "es": "Capital de riesgo / Tecnología privada",
+    "ar": "رأس المال الجريء / التكنولوجيا الخاصة"
+  }
+}
